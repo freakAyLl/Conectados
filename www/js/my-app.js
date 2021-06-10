@@ -1,10 +1,3 @@
-/*
-Para entender mejor el codigo sacar commentarios "//" a 
-lineas: 47, 57, 76, 81, 87, 91, 94, 101, 108, 111, 131, 134, 140
-*/
-
-
-
 
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7; //declaro al $$ como palabra reservada.
@@ -27,19 +20,43 @@ var app = new Framework7({//defino una nueva instancia de mi framework7 llamada 
       {path: '/favoritos/', url: 'favoritos.html'},
       {path: '/cursos/', url: 'cursos.html'},
       {path: '/clases/', url: 'clases.html'},
-      
+      {path: '/login/', url: 'login.html'},
+      {path: '/register/', url: 'register.html'},
     ]
     // ... other parameters
   });
 
 var mainView = app.views.create('.view-main');
 //inicio de index
-$$(document).on('page:init','.page[data-name="index"]', function (e) { 
-
+$$(document).on('page:init','.page[data-name="index"]', function (e) {
+  mainView.router.navigate('/login/')
 })
-//inicio de igamepage
-$$(document).on('page:init', '.page[data-name="gamePage"]', function (e) {
+//register init
+$$(document).on('page:init', '.page[data-name="register"]', function (e) {
+  $$('#register').on('click', addinputlisteners)
 })
-//variables a usar en el sistema
+//login init
 
-//FUNCIONES
+//variables
+
+let addinputlisteners=()=>{
+    var email = $$('#registerMail').val();
+    var clave = $$('#registerIndex').val();
+    firebase.auth().createUserWithEmailAndPassword(email, clave)
+        .then( ()=> {
+            //si no hay errores pasa al index
+            console.log('que paso??');
+            mainView.router.navigate('/index/');
+        })
+        .catch( (error)=> {
+          //si hay errores podemos mostrarlos
+          console.error(error.code);
+          if (error.code == "auth/email-already-in-use") {
+            //crear dialogo de error
+              console.error("el mail ya existe...");
+          }
+      });
+}
+
+
+

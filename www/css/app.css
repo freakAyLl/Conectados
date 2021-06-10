@@ -129,3 +129,8 @@
 .searchbar{
   border-radius: 3rem !important;
 }
+/*Register Screen*/
+.register{
+  margin-top: 3vh;
+  margin-bottom: 15vh!important;
+}
