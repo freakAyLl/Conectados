@@ -1,7 +1,11 @@
 <div class="page no-navbar no-toolbar no-swipeback" data-name="login">
     <div class="page-content login-screen-content">
-      <div class="login-screen-title  margin-top title-text">Conectados <img class="title-logo" src="img/logo-final.png" alt="logo"></div>
-      <div class="login-screen-title register">Log in</div>
+        <div class="text-align-center">
+            <p class="title-text login-screen-title margin-top register"> <br><br> Conectados<img class="title-logo" src="img/logo-final.png" alt="logo"></p>
+        </div>
+        <div class="text-align-center register">
+            <p class="login-screen-title log-in">Log in</p>
+        </div>
       <form>
         <div class="list">
           <ul>
@@ -9,7 +13,7 @@
               <div class="item-inner">
                 <div class="item-title item-floating-label">Username</div>
                 <div class="item-input-wrap">
-                  <input type="text" name="username" id="registerMail" placeholder="Your mail" />
+                  <input type="text" name="username" id="loginMail" placeholder="Your mail" />
                 </div>
               </div>
             </li>
@@ -17,7 +21,7 @@
               <div class="item-inner">
                 <div class="item-title item-floating-label">Password</div>
                 <div class="item-input-wrap">
-                  <input type="password" name="password" id="registerIndex" placeholder="Your password" />
+                  <input type="password" name="password" id="loginIndex" placeholder="Your password" />
                 </div>
               </div>
             </li>
@@ -25,15 +29,65 @@
         </div>
         <div class="list">
           <ul>
-            <li><a href="#" id="register" class="list-button">Sign In</a></li>
-            <li><a href="#"  class="list-button">google</a></li>
-            <li><a href="#"  class="list-button">Facebook</a></li>
+            <li><a href="#" id="login" class="list-button">Log In</a></li>
           </ul>
           <div class="block-footer">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-            <p><a href="#" class="link back">Close Login Screen</a></p>
+            <p>If you are new <a href="#" class="link  login-screen-open" data-login-screen=".login-screen">Create an Acount</a></p>
+            
+          </div>
+          <div class="bounce-container">
+            <div class="elevation-3 home-store login-box bounce"></div>
+            <div class="elevation-3 home-fav login-box bounce"></div>
+            <div class="elevation-3 home-courses login-box bounce"></div>
+            <div class="elevation-3 home-clases login-box bounce"></div>
           </div>
         </div>
       </form>
+      <div class="login-screen">
+        <div class="view">
+          <div class="page">
+            <div class="page-content login-screen-content register">
+              <div class="login-screen-title conectados-register title-text">Conectados <img class="title-logo" src="img/logo-final.png" alt="logo"></div>
+              <div class="login-screen-title register">Register</div>
+              <form>
+                <div class="list">
+                  <ul>
+                    <li class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title item-floating-label">Username</div>
+                        <div class="item-input-wrap">
+                          <input type="text" name="username" id="registerMail" placeholder="Your mail" />
+                        </div>
+                      </div>
+                    </li>
+                    <li class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title item-floating-label">Password</div>
+                        <div class="item-input-wrap">
+                          <input type="password" name="password" id="registerIndex" placeholder="Your password" />
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="list">
+                  <ul>
+                    <li><a class="list-button" href="#">Sign In</a></li>
+                  </ul>
+                  <div class="block-footer">
+                    <p><a class="link login-screen-close" href="#">Close Login Screen</a></p>
+                  </div>
+                  <div class="bounce-container">
+                    <div class="elevation-3 home-store login-box bounce"></div>
+                    <div class="elevation-3 home-fav login-box bounce"></div>
+                    <div class="elevation-3 home-courses login-box bounce"></div>
+                    <div class="elevation-3 home-clases login-box bounce"></div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 </div>

@@ -36,7 +36,9 @@ $$(document).on('page:init', '.page[data-name="register"]', function (e) {
   $$('#register').on('click', addinputlisteners)
 })
 //login init
-
+$$(document).on('page:init', '.page[data-name="register"]', function (e) {
+  $$('#login').on('click', addinputlisteners)
+})
 //variables
 
 let addinputlisteners=()=>{

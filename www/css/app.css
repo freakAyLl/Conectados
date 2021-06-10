@@ -129,8 +129,50 @@
 .searchbar{
   border-radius: 3rem !important;
 }
-/*Register Screen*/
+/*Login adn Register screen*/
 .register{
-  margin-top: 3vh;
-  margin-bottom: 15vh!important;
+  margin-top: 3vh!important;
+  margin-bottom: 3vh!important;
 }
+.bounce-container{
+  position: fixed;
+  bottom: 0px;
+  display: flex;
+  align-items: flex-end;
+  height: 34vh;
+  width: 100%;
+  justify-content: space-around;
+}
+.login-box{
+  align-self: flex-end;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  transform-origin: bottom;
+  height: 8vh;
+  width: 25%;
+}
+.login-box:nth-child(1){
+  animation-duration: 2.2s;
+}
+.login-box:nth-child(2){
+  animation-duration: 2.3s;
+}
+.login-box:nth-child(3){
+  animation-duration: 1.8s;
+}
+.bounce{
+  animation-name: bounce-4;
+  animation-timing-function: ease;
+}
+@keyframes bounce-4 {
+  0%   { transform: scale(1,1)    translateY(0); }
+  10%  { transform: scale(1.2,.9) translateY(0); }
+  30%  {
+    transform: scale(.9,1.1) translateY(-20vh);
+    border-radius: 50%;
+  }
+  50%  { transform: scale(1,1)    translateY(0); }
+  60%  { border-radius: 0%;}
+  100% { transform: scale(1,1)    translateY(0); }
+}
+/*Register Screen*/
