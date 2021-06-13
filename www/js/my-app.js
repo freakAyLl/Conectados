@@ -68,7 +68,7 @@ let fnRegister=()=>{
     });
 }
 let checkLogin = () =>{ //revisa si usuario esta logeado
-  firebase.auth().onAuthStateChanged(function(user) {
+  var user = firebase.auth().currentUser;
     if (user) {
       // User is signed in.
       console.log(user + 'loged in')
@@ -78,18 +78,15 @@ let checkLogin = () =>{ //revisa si usuario esta logeado
       mainView.router.navigate('/login/')
       // No user is signed in.
     }
-  });
-} 
+}
 let fnLogin=()=>{ //logea usuarios
   var email = $$('#loginMail').val();
   var password = $$('#loginPass').val();
   firebase.auth().signInWithEmailAndPassword(email, password)
   .then((userCredential) => {
-    // Signed in
     var user = userCredential.user;
-    // ...
     console.log('valido')
-    checkLogin()
+    mainView.router.navigate('/index/')
   })
   .catch((error) => {
     var errorCode = error.code;
