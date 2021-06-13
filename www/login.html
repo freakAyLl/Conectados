@@ -4,24 +4,24 @@
             <p class="title-text login-screen-title margin-top register"> <br><br> Conectados<img class="title-logo" src="img/logo-final.png" alt="logo"></p>
         </div>
         <div class="text-align-center register">
-            <p class="login-screen-title log-in">Log in</p>
+            <p class="login-screen-title log-in">Ingresar</p>
         </div>
       <form>
         <div class="list">
           <ul>
             <li class="item-content item-input">
               <div class="item-inner">
-                <div class="item-title item-floating-label">Username</div>
+                <div class="item-title item-floating-label">Usuario</div>
                 <div class="item-input-wrap">
-                  <input type="text" name="username" id="loginMail" placeholder="Your mail" />
+                  <input type="text" name="username" id="loginMail" required/>
                 </div>
               </div>
             </li>
             <li class="item-content item-input">
               <div class="item-inner">
-                <div class="item-title item-floating-label">Password</div>
+                <div class="item-title item-floating-label">Contraseña</div>
                 <div class="item-input-wrap">
-                  <input type="password" name="password" id="loginIndex" placeholder="Your password" />
+                  <input type="password" name="password" id="loginPass" required/>
                 </div>
               </div>
             </li>
@@ -29,10 +29,10 @@
         </div>
         <div class="list">
           <ul>
-            <li><a href="#" id="login" class="list-button">Log In</a></li>
+            <li><a href="#" id="login" class="list-button">Ingresa!</a></li>
           </ul>
           <div class="block-footer">
-            <p>If you are new <a href="#" class="link  login-screen-open" data-login-screen=".login-screen">Create an Acount</a></p>
+            <p>Si eres nuevo <a href="#" class="link  login-screen-open" data-login-screen=".login-screen">Crea una cuenta.</a></p>
             
           </div>
           <div class="bounce-container">
@@ -48,23 +48,23 @@
           <div class="page">
             <div class="page-content login-screen-content register">
               <div class="login-screen-title conectados-register title-text">Conectados <img class="title-logo" src="img/logo-final.png" alt="logo"></div>
-              <div class="login-screen-title register">Register</div>
+              <div class="login-screen-title register">Registrarse</div>
               <form>
                 <div class="list">
                   <ul>
                     <li class="item-content item-input">
                       <div class="item-inner">
-                        <div class="item-title item-floating-label">Username</div>
+                        <div class="item-title item-floating-label">usuario</div>
                         <div class="item-input-wrap">
-                          <input type="text" name="username" id="registerMail" placeholder="Your mail" />
+                          <input type="text" name="username" id="registerMail" required/>
                         </div>
                       </div>
                     </li>
                     <li class="item-content item-input">
                       <div class="item-inner">
-                        <div class="item-title item-floating-label">Password</div>
+                        <div class="item-title item-floating-label">Contraseña</div>
                         <div class="item-input-wrap">
-                          <input type="password" name="password" id="registerIndex" placeholder="Your password" />
+                          <input type="password" name="password" id="registerPass" required/>
                         </div>
                       </div>
                     </li>
@@ -72,10 +72,10 @@
                 </div>
                 <div class="list">
                   <ul>
-                    <li><a class="list-button" href="#">Sign In</a></li>
+                    <li><a class="list-button" id="register" href="#">Registrarse!</a></li>
                   </ul>
                   <div class="block-footer">
-                    <p><a class="link login-screen-close" href="#">Close Login Screen</a></p>
+                    <p><a class="link login-screen-close" href="#">Volver a pagina de registro</a></p>
                   </div>
                   <div class="bounce-container">
                     <div class="elevation-3 home-store login-box bounce"></div>
