@@ -22,6 +22,7 @@ var app = new Framework7({//defino una nueva instancia de mi framework7 llamada 
       {path: '/clases/', url: 'clases.html'},
       {path: '/login/', url: 'login.html'},
       {path: '/register/', url: 'register.html'},
+      {path: '/content/', url: 'content.html'},
     ]
     // ... other parameters
   });
@@ -31,22 +32,59 @@ var mainView = app.views.create('.view-main');
 //inicio de index
 $$(document).on('page:init','.page[data-name="index"]', function (e) {
   checkLogin()//check if its loged
+  tabOptions()
 })
 //login init
 $$(document).on('page:init', '.page[data-name="login"]', function (e) {
   $$('#register').on('click', fnRegister)
   $$('#login').on('click', fnLogin)
 })
-
+$$(document).on('page:init', '.page[data-name="content"]', function (e) {
+  selectedTab()
+})
 
 //variables
+let tab=1
+
+let selectedTab=()=>{app.tab.show('#tab-'+tab)}
+
+let tabOptions =()=>{
+  let options=document.querySelectorAll('.home-options')//a, a, a,a
+  console.log(options)
+  options.forEach((e)=>{//a
+    console.log(e)
+    e.addEventListener('click',()=>{
+      console.log('click')
+      if(e.classList.contains('home-clases')){
+        console.log('tengo clases :c')
+        mainView.router.navigate('/content/')
+        tab=1
+      } //si a tiene home-clases...
+      if(e.classList.contains('home-fav')){
+        console.log('tengo clases :c')
+        mainView.router.navigate('/content/')
+        tab=2
+      } //si a tiene home-clases...
+      if(e.classList.contains('home-courses')){
+        console.log('tengo clases :c')
+        mainView.router.navigate('/content/')
+        tab=3
+      } //si a tiene home-clases...
+      if(e.classList.contains('home-store')){
+        console.log('tengo clases :c')
+        mainView.router.navigate('/content/')
+        tab=4
+      } //si a tiene home-clases...
+    })
+  })
+}
 let fnRegister=()=>{
   var email = $$('#registerMail').val();
   var password = $$('#registerPass').val();
   firebase.auth().createUserWithEmailAndPassword(email, password)
       .then( ()=> {
-          //si no hay errores pasa al index
           console.log('voy a ir al index');
+          //aca hay que crear el nuevo objeto y guardarlo en la base de datos
           mainView.router.navigate('/index/');
       })
       .catch( (error)=> {

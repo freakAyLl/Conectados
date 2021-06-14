@@ -95,28 +95,16 @@
   border-radius: 5%;
 }
 .home-clases{
-  background-color: rgb(195, 195, 195);
-}
-.home-clases-opacity{
-  background-color: rgba(195, 195, 195, 0.2)!important;
+  background-color: rgb(195, 195, 195)!important;
 }
 .home-fav{
-  background-color: rgb(255, 253, 183);
-}
-.home-fav-opacity{
-  background-color: rgb(255, 253, 183, 0.1) !important;
+  background-color: rgb(255, 253, 183)!important;
 }
 .home-store{
-  background: rgb(251, 203, 198);
-}
-.home-store-opacity{
-  background:rgba(251, 203, 198,0.1) !important;
+  background: rgb(251, 203, 198)!important;
 }
 .home-courses{
-  background-color: rgb(200, 191, 231);
-}
-.home-courses-opacity{
-  background-color: rgba(200, 191, 231, 0.1)!important;
+  background-color: rgb(200, 191, 231)!important;
 }
 .home-options img{
   color: black;
@@ -126,8 +114,9 @@
   border-radius: 50%;
   border: black 3px solid;
 }
-.searchbar{
+.searchbar, .search-opacity{
   border-radius: 3rem !important;
+  background-color: rgba(255, 255, 255, 0.3)!important
 }
 /*Login adn Register screen*/
 .register{
@@ -177,3 +166,35 @@
   100% { transform: scale(1,1)    translateY(0); }
 }
 /*Register Screen*/
+/*searchbar*/
+.searchbar{
+  margin-top: 1vh;
+  box-shadow: none!important;
+  border-bottom: none!important;
+}
+.searchbar-inner{
+  box-shadow: none!important;
+  border-bottom: none!important;
+}
+.searchbar-input-wrap{
+  box-shadow: none!important;
+  border-bottom: none!important;
+}
+.input-clear-button{
+  box-shadow: none!important;
+  border-bottom: none!important;
+}
+.searchbar-disable-button{
+  box-shadow: none!important;
+  border-bottom: none!important;
+}
+
+/*navbar*/
+
+.nav-opacity{
+  background-color: rgba(255, 255, 255, 0.3)!important
+}
+/*toolbar*/
+.first-toolbar{
+  width: 7% !important;
+}
