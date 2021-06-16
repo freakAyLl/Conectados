@@ -168,7 +168,6 @@
 /*Register Screen*/
 /*searchbar*/
 .searchbar{
-  margin-top: 1vh;
   box-shadow: none!important;
   border-bottom: none!important;
 }
@@ -188,8 +187,57 @@
   box-shadow: none!important;
   border-bottom: none!important;
 }
+/*tabs*/
+.titles-tab{
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+/*Cards*/
+.card-image{
+  position: absolute;
+  height: 30vh;
+  width: 100vw;
+
+}
+.shape1{
+  display: inline-block!important;
+  position: absolute;
+  left: -6vw;
+  width: calc(40vw*1.5);
+  height: 15vh;
+  background-color: rgb(141, 140, 140);
+  transform: skew(35deg);
+}
+.shape2{
+  display: inline-block!important;
+  position: absolute;
+  left: -6vw;
+  width: calc(40vw*1.5);
+  height: 14vh;
+  background-color: rgb(255, 250, 113);
+  transform: skew(35deg);
+}
+.shape3{
+  display: inline-block!important;
+  position: absolute;
+  left: -6vw;
+  width: calc(40vw*1.5);
+  height: 14vh;
+  background-color: rgb(135, 103, 253);
+  transform: skew(35deg);
+}
+.shape4{
+  display: inline-block!important;
+  position: absolute;
+  left: -6vw;
+  width: calc(40vw*1.5);
+  height: 14vh;
+  background-color: rgb(255, 123, 109);
+  transform: skew(35deg);
+}
 
 /*navbar*/
+
 
 .nav-opacity{
   background-color: rgba(255, 255, 255, 0.3)!important

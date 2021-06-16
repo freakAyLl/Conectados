@@ -26,12 +26,13 @@ var app = new Framework7({//defino una nueva instancia de mi framework7 llamada 
     ]
     // ... other parameters
   });
-
 var mainView = app.views.create('.view-main');
+//Objetos
+
 
 //inicio de index
 $$(document).on('page:init','.page[data-name="index"]', function (e) {
-  checkLogin()//check if its loged
+  checkLogin()
   tabOptions()
 })
 //login init
@@ -39,9 +40,7 @@ $$(document).on('page:init', '.page[data-name="login"]', function (e) {
   $$('#register').on('click', fnRegister)
   $$('#login').on('click', fnLogin)
 })
-$$(document).on('page:init', '.page[data-name="content"]', function (e) {
-  selectedTab()
-})
+$$(document).on('page:init', '.page[data-name="content"]', function (e) {selectedTab()})
 
 //variables
 let tab=1
@@ -49,32 +48,26 @@ let tab=1
 let selectedTab=()=>{app.tab.show('#tab-'+tab)}
 
 let tabOptions =()=>{
-  let options=document.querySelectorAll('.home-options')//a, a, a,a
+  let options=document.querySelectorAll('.home-options')
   console.log(options)
-  options.forEach((e)=>{//a
-    console.log(e)
+  options.forEach((e)=>{
     e.addEventListener('click',()=>{
-      console.log('click')
       if(e.classList.contains('home-clases')){
-        console.log('tengo clases :c')
         mainView.router.navigate('/content/')
         tab=1
-      } //si a tiene home-clases...
+      }
       if(e.classList.contains('home-fav')){
-        console.log('tengo clases :c')
         mainView.router.navigate('/content/')
         tab=2
-      } //si a tiene home-clases...
+      }
       if(e.classList.contains('home-courses')){
-        console.log('tengo clases :c')
         mainView.router.navigate('/content/')
         tab=3
-      } //si a tiene home-clases...
+      }
       if(e.classList.contains('home-store')){
-        console.log('tengo clases :c')
         mainView.router.navigate('/content/')
         tab=4
-      } //si a tiene home-clases...
+      }
     })
   })
 }
@@ -84,11 +77,9 @@ let fnRegister=()=>{
   firebase.auth().createUserWithEmailAndPassword(email, password)
       .then( ()=> {
           console.log('voy a ir al index');
-          //aca hay que crear el nuevo objeto y guardarlo en la base de datos
           mainView.router.navigate('/index/');
       })
       .catch( (error)=> {
-        //si hay errores podemos mostrarlos
         console.error(error.code);
         switch (error.code){
           case 'auth/email-already-in-use':
@@ -105,32 +96,25 @@ let fnRegister=()=>{
         }
     });
 }
-let checkLogin = () =>{ //revisa si usuario esta logeado
+let checkLogin = () =>{ 
   var user = firebase.auth().currentUser;
     if (user) {
-      // User is signed in.
-      console.log(user + 'loged in')
-      app.loginScreen.close()//cierra login screen (sacado de la libreria, no se bien si cierra todos los dialogos)
+      app.loginScreen.close()
     } else {
-      console.log(user + 'loged in')
       mainView.router.navigate('/login/')
-      // No user is signed in.
     }
 }
-let fnLogin=()=>{ //logea usuarios
+let fnLogin=()=>{
   var email = $$('#loginMail').val();
   var password = $$('#loginPass').val();
   firebase.auth().signInWithEmailAndPassword(email, password)
   .then((userCredential) => {
     var user = userCredential.user;
-    console.log('valido')
     mainView.router.navigate('/index/')
   })
   .catch((error) => {
     var errorCode = error.code;
     var errorMessage = error.message;
-    console.log(errorCode)
-    console.log(errorMessage)
     switch (errorCode){
       case 'auth/invalid-email':
         app.dialog.alert('Error, email incorrecto')
