@@ -93,6 +93,7 @@ class Content{//class content objects content for each lesson
 let currentEmail= '';
 let registered=false;
 let tab=1;
+let name , surname , age
 /*-------------------------------------------                   ______  ---------------------------------------------------*/
 /*-------------------------------------------                  / DB  /  ---------------------------------------------------*/
 /*-------------------------------------------                 /_____/   ---------------------------------------------------*/
@@ -123,7 +124,10 @@ $$(document).on('page:init','.page[data-name="index"]', function (e) {
   if(registered){ createUser()}
   panelOpener()
   $$('#becomeTeacherBtn').on('click',becomeTeacherDialog)
-  $$('#fillProfile').on('click', /*algo aca*/     )
+  $$('#profileName').on('click', ()=>{promptGenerator('n')})
+  $$('#profileSurname').on('click', ()=>{promptGenerator('s')})
+  $$('#profileAge').on('click', ()=>{promptGenerator('a')})
+
 })
 //login init
 $$(document).on('page:init', '.page[data-name="login"]', function (e) {
@@ -133,10 +137,14 @@ $$(document).on('page:init', '.page[data-name="login"]', function (e) {
 //content init
 $$(document).on('page:init', '.page[data-name="content"]', function (e) {
   selectedTab()
-  //updateProfile()// just here for test purpouses.
 })
-let allOk =() =>{ console.log('All ok')}
-let almost =() =>{ console.log('almost XD')}
+
+ /*
+ Teacher related to do.
+  1. Obtain current user.
+  2. Change user type.
+  3. function to detect if is a teacher and show teacher options.
+  */
 
 /*--------------------------------------------        ____               ---------------------------------------------------*/
 /*--------------------------------------------      __|00|__     ______  ---------------------------------------------------*/
@@ -147,17 +155,68 @@ let almost =() =>{ console.log('almost XD')}
 /*--------------------------------------------       |    |              ---------------------------------------------------*/
 /*--------------------------------------------       | || |              ---------------------------------------------------*/
 /*--------------------------------------------     ````````              ---------------------------------------------------*/
-
- /*
- Teacher related to do.
-  1. Obtain current user.
-  2. Change user type.
-  3. function to detect if is a teacher and show teacher options.
-  */
-let becomeTeacherDialog = () =>{app.dialog.confirm('Estas seguro? una vez que te hagas profesor no podras volver para atras!', 'Hazte Profesor', becomeTeacher , almost )}
-let becomeTeacher = () =>{
- 
+let promptGenerator = (key)=>{
+  console.log('ejecutado')
+  switch (key){
+    case 'n':
+      app.dialog.prompt('Inserte su nombre', 'Actualizando Perfil', function (value){
+        name=value;
+        updateProfile()
+      })
+      break;
+    case 's':
+      app.dialog.prompt('Inserte su Apellido', 'Actualizando Perfil', function (value){
+        surname=value;
+        updateProfile()
+      })
+      break;
+    case 'a':
+      app.dialog.prompt('Inserte su edad', 'Actualizando Perfil', function (value){
+        age=value;
+        updateProfile()
+      })
+      break;
+  }
 }
+
+let updateApp= (newUser)=>{
+    console.log(newUser)
+    console.log(newUser)
+    if(newUser.userName!=''){$$('#profileName').html(newUser.userName)}else{$$('#profileName').html('Inserte su Nombre')}
+    if(newUser.userSurname!=''){$$('#profileSurname').html(newUser.userSurname)}else{$$('#profileSurname').html('Inserte su apellido')}
+    if(newUser.userAge!=''){$$('#profileAge').html(newUser.userAge)}else{$$('#profileAge').html('Inserte su edad')}
+}
+let updateProfile = () => {
+  usersCol.doc(currentEmail).get()
+  .then((object)=>{
+    let user= object.data()
+    console.log('updating profile' +user)
+    let newUser = new Users(name ||user.userName , surname || user.userSurname, age || user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV, user.userType)//here i should put my new objects
+    console.log('downlodaing data'+ user)
+    console.log(newUser)
+    changeUsers( newUser, currentEmail)
+    updateApp(newUser)
+  })
+  .catch((error)=>{console.log('error: '+error)})
+}
+let becomeTeacherDialog = () =>{app.dialog.confirm('Estas seguro? una vez que te hagas profesor no podras volver para atras!', 'Hazte Profesor', becomeTeacher , almost )}
+let becomeTeacher = () =>{}
+let changeUsers = ( changes, id) => {
+  usersCol.doc(id).set(Object.assign({}, changes))
+  .then(()=>{registered=false})
+  .catch(()=>{console.log('no se creo con el id'+docRef)})
+}
+
+//when a new person Registers, this functions add a new person to de collection
+let createUser = () =>{
+  let user = firebase.auth().currentUser;
+  let newUser = new Users(user.userName , user.userSurname, user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV, user.userType)
+  console.log('Cree un User: '+ newUser) 
+  changeUsers(newUser, currentEmail)
+}
+
+//When someone clicks on update profile button (to develop) he can update his profile
+
 let panelOpener = () =>{
   $$('.open-left-panel').on('click', function (e) {
     // 'left' position to open Left panel
@@ -167,30 +226,9 @@ let panelOpener = () =>{
   app.closePanel();
 });
 }
-
-//when a new person Registers, this functions add a new person to de collection
-let createUser = () =>{
-  let user = firebase.auth().currentUser;
-  let newUser = new Users(user.userName , user.userSurname, user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV, userType)
-  console.log('Cree un User: '+ newUser) 
-  changeUsers(newUser, currentEmail)
-}
-//When someone clicks on update profile button (to develop) he can update his profile
-let updateProfile = () => {
-  let user = usersCol.doc(currentEmail).get()
-  .then(()=>{
-    let newUser = new Users(user.userName , user.userSurname, user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV, userType)//here i should put my new objects
-    changeUsers( newUser, currentEmail)
-  })
-  .catch((error)=>{console.log('error: '+error)})
-}
 //Asign changes or new variables to collections
 //IDEA: use a third argument to choose between collections to manage them with just one function. (collection, changes, id)
-let changeUsers = ( changes, id) => {
-  usersCol.doc(id).set(Object.assign({}, changes))
-  .then(()=>{registered=false})
-  .catch(()=>{console.log('no se creo con el id'+docRef)})
-}
+
 let selectedTab=()=>{app.tab.show('#tab-'+tab)}
 let tabOptions =()=>{
   let options=document.querySelectorAll('.home-options')
@@ -210,6 +248,7 @@ let fnRegister = () =>{
   firebase.auth().createUserWithEmailAndPassword(currentEmail, password)
       .then(()=> {
           console.log('voy a ir al index');
+          updateProfile()
           mainView.router.navigate('/index/');
           console.log(currentEmail)
           registered=true
@@ -241,7 +280,8 @@ let fnLogin = () =>{
   firebase.auth().signInWithEmailAndPassword(currentEmail, password)
   .then((userCredential) => {
     var user = userCredential.user;
-    mainView.router.navigate('/index/')
+    updateProfile()
+    mainView.router.navigate('/index/')   
   })
   .catch((error) => {
     var errorCode = error.code;
@@ -264,3 +304,6 @@ let fnLogin = () =>{
     }
   });
 }
+
+let allOk =() =>{ console.log('All ok')}
+let almost =() =>{ console.log('almost XD')}
