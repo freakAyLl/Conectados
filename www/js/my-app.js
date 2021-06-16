@@ -1,4 +1,3 @@
-
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7; //declaro al $$ como palabra reservada.
 
@@ -30,57 +29,157 @@ var mainView = app.views.create('.view-main');
 //Objetos
 
 
+class Users{
+  constructor(userName, userSurname, userAge, profilePic, userLevel, userCourses, userActivity, userCV){
+    this.userName = userName;
+    this.userSurname = userSurname;
+    this.userAge = userAge;
+    this.profilePic = profilePic;
+    this.userLevel = userLevel;
+    this.userCourses = userCourses;
+    this.userActivity = userActivity;
+    this.userCV = userCV; //teachers only
+  }
+}
+class Classes{//class classes create objects classes
+  constructor(idClasses,className, creatorMail, classShedule, classOverallSumary, classSumary, classRequirements, classPrice,  classVideoCall,  classDelayAllowed, classPicture){
+    this.idClasses = idClasses;
+    this.className = className;
+    this.creatorMail = creatorMail;
+    this.classShedule = classShedule;
+    this.classOverallSumary = classOverallSumary;
+    this.classSumary = classSumary;
+    this.classRequirements = classRequirements;
+    this.classPrice = classPrice;
+    this.classVideoCall = classVideoCall;
+    this.classDelayAllowed = classDelayAllowed;
+    this.classPicture = classPicture;
+  }
+}
+
+
+class Courses{//class courses create objects courses
+  constructor(idCourse, creatorMail, lessons, courseSummary, completed, coursePrice, courseMedia, available){
+    this.idCourse = idCourse;
+    this.creatorMail = creatorMail;
+    this.lessons = lessons;//it has Lesson names and ids
+    this.courseSummary = courseSummary;
+    this.completed = completed;
+    this.coursePrice = coursePrice;
+    this.courseMedia = courseMedia;
+    this.available = available;
+  }
+}
+class Content{//class content objects content for each lesson
+  constructor(idlesson, contentCompleted, contentVideos, lessonSumary, extraLessonInfo, lessonMedia){
+    this.idlesson = idlesson;
+    this.contentCompleted = contentCompleted;
+    this.contentVideos = contentVideos;
+    this.lessonSumary = lessonSumary;
+    this.extraLessonInfo = extraLessonInfo;
+    this.lessonMedia = lessonMedia;
+  }
+}
+var currentEmail= ''
+//INIT EVENTS
 //inicio de index
 $$(document).on('page:init','.page[data-name="index"]', function (e) {
   checkLogin()
   tabOptions()
+  if(registered){ createUser()}
 })
 //login init
 $$(document).on('page:init', '.page[data-name="login"]', function (e) {
   $$('#register').on('click', fnRegister)
   $$('#login').on('click', fnLogin)
 })
-$$(document).on('page:init', '.page[data-name="content"]', function (e) {selectedTab()})
+//content init
+$$(document).on('page:init', '.page[data-name="content"]', function (e) {
+  selectedTab()
+  updateProfile()
+})
 
-//variables
-let tab=1
+//VARIABLES GLOBALES
 
+var tab=1//var to assign globally
+//DATABASE RELATED
+
+
+//GENERAL
+let db= firebase.firestore()
+//COLLECTIONS
+let usersCol= db.collection('Users')
+
+//when a new person Registers, this functions add a new person to de collection
+let createUser = () =>{
+    console.log('Ejecute Create User')
+  let user = firebase.auth().currentUser;
+  let userEmail = user.email 
+  console.log(user)
+  console.log('pase db')
+  console.log(userEmail)
+  let newUser = new Users(user.userName ||'', user.userSurname ||'', user.userAge||'', user.profilePic ||'', user.userLevel ||'', user.userCourses ||'', user.userActivity ||'', user.userCV ||'')
+  console.log('Cree un User: ') 
+  console.log(newUser) 
+  usersCol.doc(userEmail).set(Object.assign({}, newUser)) //object.assign
+  .then(()=>{
+    registered=false;
+  })
+  .catch(()=>{
+      console.log('no se creo con el id'+docRef)
+    }
+  )
+}
+
+let updateProfile = () => {
+  let user = usersCol.doc(currentEmail).get()
+  .then(()=>{
+
+  })
+  .catch()
+  console.log(user)
+  let userUpdated = new Users(user.userName , user.userSurname , user.userAge , user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV )
+  user.updateProfile(userUpdated)
+  .then(()=>{
+    // Update successful.
+    console.log(midoc)
+  })
+  .catch(()=> {
+    // An error happened.
+  });
+//obtain user, create an object with the user info in the order marked below
+//  mail, userName, userSurname, userAge, profilePic, userLevel, userCourses, userActivity, userCV
+}
+
+var registered=false
+
+//FUNCTIONS
 let selectedTab=()=>{app.tab.show('#tab-'+tab)}
-
 let tabOptions =()=>{
   let options=document.querySelectorAll('.home-options')
-  console.log(options)
   options.forEach((e)=>{
     e.addEventListener('click',()=>{
-      if(e.classList.contains('home-clases')){
-        mainView.router.navigate('/content/')
-        tab=1
-      }
-      if(e.classList.contains('home-fav')){
-        mainView.router.navigate('/content/')
-        tab=2
-      }
-      if(e.classList.contains('home-courses')){
-        mainView.router.navigate('/content/')
-        tab=3
-      }
-      if(e.classList.contains('home-store')){
-        mainView.router.navigate('/content/')
-        tab=4
-      }
+      mainView.router.navigate('/content/')
+      if(e.classList.contains('home-clases')){tab=1}
+      if(e.classList.contains('home-fav')){tab=2}
+      if(e.classList.contains('home-courses')){tab=3}
+      if(e.classList.contains('home-store')){tab=4}
     })
   })
 }
-let fnRegister=()=>{
-  var email = $$('#registerMail').val();
+let fnRegister = () =>{
+  currentEmail = $$('#registerMail').val();
   var password = $$('#registerPass').val();
-  firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then( ()=> {
+  firebase.auth().createUserWithEmailAndPassword(currentEmail, password)
+      .then(()=> {
           console.log('voy a ir al index');
           mainView.router.navigate('/index/');
+          console.log(currentEmail)
+          registered=true
+          console.log(registered)
       })
-      .catch( (error)=> {
-        console.error(error.code);
+      .catch((error)=>{
+        console.log('tambien ejecute el catch')
         switch (error.code){
           case 'auth/email-already-in-use':
             app.dialog.alert('Su Email ya se encuentra en uso.')
@@ -91,10 +190,9 @@ let fnRegister=()=>{
           case 'auth/weak-password':
             app.dialog.alert('Contraseña debil, por favor cambiela.')
             break
-          default:
-            app.dialog.alert('Ups, algo salio mal')
         }
     });
+
 }
 let checkLogin = () =>{ 
   var user = firebase.auth().currentUser;
@@ -104,10 +202,10 @@ let checkLogin = () =>{
       mainView.router.navigate('/login/')
     }
 }
-let fnLogin=()=>{
-  var email = $$('#loginMail').val();
+let fnLogin = () =>{
+  currentEmail = $$('#loginMail').val();
   var password = $$('#loginPass').val();
-  firebase.auth().signInWithEmailAndPassword(email, password)
+  firebase.auth().signInWithEmailAndPassword(currentEmail, password)
   .then((userCredential) => {
     var user = userCredential.user;
     mainView.router.navigate('/index/')
@@ -133,7 +231,6 @@ let fnLogin=()=>{
     }
   });
 }
-
 
 
 
