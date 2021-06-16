@@ -30,30 +30,31 @@ var mainView = app.views.create('.view-main');
 
 
 class Users{
-  constructor(userName, userSurname, userAge, profilePic, userLevel, userCourses, userActivity, userCV){
-    this.userName = userName;
-    this.userSurname = userSurname;
-    this.userAge = userAge;
-    this.profilePic = profilePic;
-    this.userLevel = userLevel;
-    this.userCourses = userCourses;
-    this.userActivity = userActivity;
-    this.userCV = userCV; //teachers only
+  constructor(userName, userSurname, userAge, profilePic, userLevel, userCourses, userActivity, userCV, userType){
+    this.userName = userName ||'';
+    this.userSurname = userSurname ||'';
+    this.userAge = userAge ||'';
+    this.profilePic = profilePic ||'';
+    this.userLevel = userLevel ||0;
+    this.userCourses = userCourses ||[];
+    this.userActivity = userActivity ||[];
+    this.userCV = userCV ||''; //teachers only
+    this.userType = userType || 'Student'
   }
 }
 class Classes{//class classes create objects classes
   constructor(idClasses,className, creatorMail, classShedule, classOverallSumary, classSumary, classRequirements, classPrice,  classVideoCall,  classDelayAllowed, classPicture){
     this.idClasses = idClasses;
-    this.className = className;
-    this.creatorMail = creatorMail;
-    this.classShedule = classShedule;
-    this.classOverallSumary = classOverallSumary;
-    this.classSumary = classSumary;
-    this.classRequirements = classRequirements;
-    this.classPrice = classPrice;
-    this.classVideoCall = classVideoCall;
-    this.classDelayAllowed = classDelayAllowed;
-    this.classPicture = classPicture;
+    this.className = className  ||'';
+    this.creatorMail = creatorMail  ||'';
+    this.classShedule = classShedule  ||'';
+    this.classOverallSumary = classOverallSumary  ||'';
+    this.classSumary = classSumary  ||'';
+    this.classRequirements = classRequirements || [];
+    this.classPrice = classPrice  || 0;
+    this.classVideoCall = classVideoCall  ||'';
+    this.classDelayAllowed = classDelayAllowed  || 10;
+    this.classPicture = classPicture  ||'';
   }
 }
 
@@ -61,40 +62,68 @@ class Classes{//class classes create objects classes
 class Courses{//class courses create objects courses
   constructor(idCourse, creatorMail, lessons, courseSummary, completed, coursePrice, courseMedia, available){
     this.idCourse = idCourse;
-    this.creatorMail = creatorMail;
-    this.lessons = lessons;//it has Lesson names and ids
-    this.courseSummary = courseSummary;
-    this.completed = completed;
-    this.coursePrice = coursePrice;
-    this.courseMedia = courseMedia;
-    this.available = available;
+    this.creatorMail = creatorMail  ||'';
+    this.lessons = lessons  ||'';//it has Lesson names and ids
+    this.courseSummary = courseSummary ||'';
+    this.completed = completed  || false;
+    this.coursePrice = coursePrice || 0;
+    this.courseMedia = courseMedia ||[];
+    this.available = available  || true;
   }
 }
 class Content{//class content objects content for each lesson
   constructor(idlesson, contentCompleted, contentVideos, lessonSumary, extraLessonInfo, lessonMedia){
     this.idlesson = idlesson;
-    this.contentCompleted = contentCompleted;
-    this.contentVideos = contentVideos;
-    this.lessonSumary = lessonSumary;
-    this.extraLessonInfo = extraLessonInfo;
-    this.lessonMedia = lessonMedia;
+    this.contentCompleted = contentCompleted || false;
+    this.contentVideos = contentVideos || '';
+    this.lessonSumary = lessonSumary || '';
+    this.extraLessonInfo = extraLessonInfo ||'';
+    this.lessonMedia = lessonMedia || [];
   }
 }
-//USER GLOBAL VARIABLES
+/*--------------------------------------------                  ______  ---------------------------------------------------*/
+/*--------------------------------------------                 / UGB /  ---------------------------------------------------*/
+/*--------------------------------------------                /_____/   ---------------------------------------------------*/
+/*--------------------------------------------      (▀̿Ĺ̯▀̿ ̿))  //         ---------------------------------------------------*/
+/*--------------------------------------------       |    |-//          ---------------------------------------------------*/
+/*--------------------------------------------  USER GLOBAL VARIABLES   ---------------------------------------------------*/
+/*--------------------------------------------       |    |/            ---------------------------------------------------*/
+/*--------------------------------------------       | || |             ---------------------------------------------------*/
+/*--------------------------------------------       ``````             ---------------------------------------------------*/
 let currentEmail= '';
 let registered=false;
 let tab=1;
-//DATABASE VARIABLES
+/*-------------------------------------------                   ______  ---------------------------------------------------*/
+/*-------------------------------------------                  / DB  /  ---------------------------------------------------*/
+/*-------------------------------------------                 /_____/   ---------------------------------------------------*/
+/*-------------------------------------------       ┗|｀O′|┛ //         ---------------------------------------------------*/
+/*-------------------------------------------        |    |-//          ---------------------------------------------------*/
+/*-------------------------------------------    DATABASE RELATED       ---------------------------------------------------*/
+/*-------------------------------------------        |    |/            ---------------------------------------------------*/
+/*-------------------------------------------        | || |             ---------------------------------------------------*/
+/*-------------------------------------------        ``````             ---------------------------------------------------*/
 let db= firebase.firestore()
 //COLLECTIONS
 let usersCol= db.collection('Users')
 
-//INIT EVENTS
+/*--------------------------------------------                   ______  ---------------------------------------------------*/
+/*--------------------------------------------                  /INIT /  ---------------------------------------------------*/
+/*--------------------------------------------                 /_____/   ---------------------------------------------------*/
+/*--------------------------------------------       (ง •_•)ง)//         ---------------------------------------------------*/
+/*--------------------------------------------       |    |  //          ---------------------------------------------------*/
+/*--------------------------------------------       |INIT| //            --------------------------------------------------*/
+/*--------------------------------------------       |    |//            ---------------------------------------------------*/
+/*--------------------------------------------       | || |/             ---------------------------------------------------*/
+/*--------------------------------------------       ``````             ----------------------------------------------------*/
 //inicio de index
+
 $$(document).on('page:init','.page[data-name="index"]', function (e) {
   checkLogin()
   tabOptions()
   if(registered){ createUser()}
+  panelOpener()
+  $$('#becomeTeacherBtn').on('click',becomeTeacherDialog)
+  $$('#fillProfile').on('click', /*algo aca*/     )
 })
 //login init
 $$(document).on('page:init', '.page[data-name="login"]', function (e) {
@@ -104,15 +133,45 @@ $$(document).on('page:init', '.page[data-name="login"]', function (e) {
 //content init
 $$(document).on('page:init', '.page[data-name="content"]', function (e) {
   selectedTab()
-  //updateProfile() just here for test purpouses.
+  //updateProfile()// just here for test purpouses.
 })
+let allOk =() =>{ console.log('All ok')}
+let almost =() =>{ console.log('almost XD')}
 
-//DATABASE RELATED
+/*--------------------------------------------        ____               ---------------------------------------------------*/
+/*--------------------------------------------      __|00|__     ______  ---------------------------------------------------*/
+/*--------------------------------------------      |______|    / FN  /  ---------------------------------------------------*/
+/*--------------------------------------------    ＼（〇_ｏ）／ /_____/   ---------------------------------------------------*/
+/*--------------------------------------------      \|    |/             ---------------------------------------------------*/
+/*--------------------------------------------      FUNCTIONS            ---------------------------------------------------*/
+/*--------------------------------------------       |    |              ---------------------------------------------------*/
+/*--------------------------------------------       | || |              ---------------------------------------------------*/
+/*--------------------------------------------     ````````              ---------------------------------------------------*/
+
+ /*
+ Teacher related to do.
+  1. Obtain current user.
+  2. Change user type.
+  3. function to detect if is a teacher and show teacher options.
+  */
+let becomeTeacherDialog = () =>{app.dialog.confirm('Estas seguro? una vez que te hagas profesor no podras volver para atras!', 'Hazte Profesor', becomeTeacher , almost )}
+let becomeTeacher = () =>{
+ 
+}
+let panelOpener = () =>{
+  $$('.open-left-panel').on('click', function (e) {
+    // 'left' position to open Left panel
+    app.panel.open('left');
+ });
+ $$('.panel-close').on('click', function (e) {
+  app.closePanel();
+});
+}
 
 //when a new person Registers, this functions add a new person to de collection
 let createUser = () =>{
   let user = firebase.auth().currentUser;
-  let newUser = new Users(user.userName ||'', user.userSurname ||'', user.userAge||'', user.profilePic ||'', user.userLevel ||0, user.userCourses || [] , user.userActivity ||[], user.userCV ||'')
+  let newUser = new Users(user.userName , user.userSurname, user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV, userType)
   console.log('Cree un User: '+ newUser) 
   changeUsers(newUser, currentEmail)
 }
@@ -120,7 +179,7 @@ let createUser = () =>{
 let updateProfile = () => {
   let user = usersCol.doc(currentEmail).get()
   .then(()=>{
-    let newUser = new Users(user.userName ||'', user.userSurname ||'', user.userAge||'', user.profilePic ||'', user.userLevel ||0, user.userCourses || [], user.userActivity ||[], user.userCV ||'')//here i should put my new objects
+    let newUser = new Users(user.userName , user.userSurname, user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV, userType)//here i should put my new objects
     changeUsers( newUser, currentEmail)
   })
   .catch((error)=>{console.log('error: '+error)})
@@ -132,8 +191,6 @@ let changeUsers = ( changes, id) => {
   .then(()=>{registered=false})
   .catch(()=>{console.log('no se creo con el id'+docRef)})
 }
-
-//FUNCTIONS
 let selectedTab=()=>{app.tab.show('#tab-'+tab)}
 let tabOptions =()=>{
   let options=document.querySelectorAll('.home-options')

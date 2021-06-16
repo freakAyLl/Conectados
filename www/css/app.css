@@ -77,6 +77,18 @@
        url('../fonts/poppins-v13-latin-900italic.ttf') format('truetype'), /* Safari, Android, iOS */
        url('../fonts/poppins-v13-latin-900italic.svg#Poppins') format('svg'); /* Legacy iOS */
 }
+/*index*/
+.panel-bg{
+  background-color: rgb(200, 191, 231)!important;
+}
+.card-expandable-index{
+  background-color: rgb(154, 90, 214);
+}
+.btn-panel{
+  position: absolute;
+  top: 0vh;
+  left: 3%;
+}
 .card-expandable{
   height: 12vh;
 }
@@ -118,6 +130,21 @@
   border-radius: 3rem !important;
   background-color: rgba(255, 255, 255, 0.3)!important
 }
+/*Profile*/
+.last-c{
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 26vh;
+  background-color: blueviolet;
+  border-radius: 10%;
+}
+.invisible{
+  display:none;
+  visibility:hidden;
+  position: absolute;
+}
+
 /*Login adn Register screen*/
 .register{
   margin-top: 3vh!important;
@@ -198,6 +225,14 @@
   height: 30vh;
   width: 100vw;
 
+}
+.card-image-profile{
+  border-radius: 50%;
+  margin-top: 1vh;
+  margin-left: 2vw;
+  height: 10vh;
+  width: auto;
+  border: 3px solid blue ;
 }
 .shape1{
   display: inline-block!important;

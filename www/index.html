@@ -23,6 +23,8 @@
 </head>
 
 <body>
+  <!-- panel -->
+  
     <div id="app">
         <!-- Statusbar overlay -->
         <div class="statusbar"></div>
@@ -30,19 +32,36 @@
         <div class="view view-main">
         <!-- Initial Page, "data-name" contains page name -->
           <div data-name="index" class="page">
+            <!-- Side Panels -->
+            <div class = "panel-overlay"></div>      
+            <div class = "panel panel-left panel-reveal panel-cover panel-bg">
+              <div class = "panel-bg block block-strong margin-left">
+                  <p>Menu</p>
+                  <button class="button button-fill color-red" id="becomeTeacherBtn" >Hazte Profesor</button>
+              </div>
+            </div>
+
                 <!-- Scrollable page content -->
                 
             <div class="page-content no-margin block display-flex flex-direction-column justify-content-space-around">
+              <div class="btn-panel">
+                <p><a href = "#" class = "open-left-panel"><span class="material-icons">menu</span></a></p>
+              </div>
               <div class="text-align-center">
                 <p class="title-text no-margin-right">Conectados <img class="title-logo" src="img/logo-final.png" alt="logo"></p>
               </div>
-              <div class="card card-expandable">
+              
+              <div class="card card-expandable card-expandable-index">
                 <div class="card-content">
-                  <div class="" style="height: 30vh">
-                    <img src="/img/zumba.jpg" class="card-image" alt="">
-                    <i class='shape4'></i>
-                    <div class="card-header text-color-white display-block">Zumba<br />
-                      <small style="opacity: 0.7">Lautaro Valdebenito</small>
+                  <div class="row" >
+                    <div class="col-33">
+                      <img src="/img/jaz.jpg" class="card-image-profile" alt="Profile Pic" id="profilePic">
+                    </div>
+                    <div class=" col-66 card-header text-color-black margin-left-half display-flex flex-direction-column align-items-flex-start">
+                        <div class="col resizable">Perfil:</div>
+                      <div class="row ">
+                        <div class="col"> <small>Alito</small> <small>Figueras</small> </div>
+                      </div>
                     </div>
                     <a href="#" class="link card-close card-opened-fade-in color-white"
                       style="position: absolute; right: 15px; top: 15px">
@@ -50,17 +69,25 @@
                     </a>
                   </div>
                   <div class="card-content-padding">
-                    <p>Framework7 - is a free and open source HTML mobile framework to develop hybrid mobile apps or web
-                      apps with iOS or Android (Material) native look and feel. It is also an indispensable prototyping apps
-                      tool to show working app prototype as soon as possible in case you need to.</p>
-                    <p>The main approach of the Framework7 is to give you an opportunity to create iOS and Android
-                      (Material) apps with HTML, CSS and JavaScript easily and clear. Framework7 is full of freedom. It
-                      doesn't limit your imagination or offer ways of any solutions somehow. Framework7 gives you freedom!
-                    </p>
-                    <p>Framework7 is not compatible with all platforms. It is focused only on iOS and Android (Material) to
-                      bring the best experience and simplicity.</p>
-                    <p>Framework7 is definitely for you if you decide to build iOS and Android hybrid app (Cordova or
-                      PhoneGap) or web app that looks like and feels as great native iOS or Android (Material) apps.</p>
+                    <div class="block margin-bottom text-align-center">
+                      <div class="button-fill button" id="fillProfile">Completa tu Perfil</div>
+                      <div class="row">
+                        <div class="col complete"><u>Nombre:</u></div>
+                        <div class="col complete"><u>Apellido</u></div>
+                      </div>
+                      <div class="row">
+                        <div class="col complete"><u>Edad</u></div>
+                        <div class="col complete"><u>0</u></div>
+                      </div>
+                    </div>
+                    <div class="display-flex flex-direction-column justify-content-space-around">
+                      <div class="block margin-top">
+                        <div class="block-title last-c margin-top padding-top padding-left">Ultimo Curso</div>
+                      </div>
+                      <div class="block margin-top">
+                        <div class="block-title last-c margin-top padding-top padding-left">Ultima Clases</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
