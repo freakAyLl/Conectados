@@ -80,7 +80,15 @@ class Content{//class content objects content for each lesson
     this.lessonMedia = lessonMedia;
   }
 }
-var currentEmail= ''
+//USER GLOBAL VARIABLES
+let currentEmail= '';
+let registered=false;
+let tab=1;
+//DATABASE VARIABLES
+let db= firebase.firestore()
+//COLLECTIONS
+let usersCol= db.collection('Users')
+
 //INIT EVENTS
 //inicio de index
 $$(document).on('page:init','.page[data-name="index"]', function (e) {
@@ -99,59 +107,32 @@ $$(document).on('page:init', '.page[data-name="content"]', function (e) {
   updateProfile()
 })
 
-//VARIABLES GLOBALES
-
-var tab=1//var to assign globally
 //DATABASE RELATED
-
-
-//GENERAL
-let db= firebase.firestore()
-//COLLECTIONS
-let usersCol= db.collection('Users')
 
 //when a new person Registers, this functions add a new person to de collection
 let createUser = () =>{
-    console.log('Ejecute Create User')
   let user = firebase.auth().currentUser;
-  let userEmail = user.email 
-  console.log(user)
-  console.log('pase db')
-  console.log(userEmail)
   let newUser = new Users(user.userName ||'', user.userSurname ||'', user.userAge||'', user.profilePic ||'', user.userLevel ||'', user.userCourses ||'', user.userActivity ||'', user.userCV ||'')
-  console.log('Cree un User: ') 
-  console.log(newUser) 
-  usersCol.doc(userEmail).set(Object.assign({}, newUser)) //object.assign
-  .then(()=>{
-    registered=false;
-  })
-  .catch(()=>{
-      console.log('no se creo con el id'+docRef)
-    }
-  )
+  console.log('Cree un User: '+ newUser) 
+  changeUsers(newUser, currentEmail)
 }
-
+//When someone clicks on update profile button (to develop) he can update his profile
 let updateProfile = () => {
   let user = usersCol.doc(currentEmail).get()
   .then(()=>{
-
+    let newUser = new Users(user.userName ||'', user.userSurname ||'', user.userAge||'', user.profilePic ||'', user.userLevel ||'', user.userCourses ||'', user.userActivity ||'', user.userCV ||'')//here i should put my new objects
+    changeUsers( newUser, currentEmail)
   })
-  .catch()
-  console.log(user)
-  let userUpdated = new Users(user.userName , user.userSurname , user.userAge , user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV )
-  user.updateProfile(userUpdated)
-  .then(()=>{
-    // Update successful.
-    console.log(midoc)
-  })
-  .catch(()=> {
-    // An error happened.
-  });
-//obtain user, create an object with the user info in the order marked below
-//  mail, userName, userSurname, userAge, profilePic, userLevel, userCourses, userActivity, userCV
+  .catch((error)=>{console.log('error: '+error)})
+}
+//Asign changes or new variables to collections
+//IDEA: use a third argument to choose between collections to manage them with just one function. (collection, changes, id)
+let changeUsers = ( changes, id) => {
+  usersCol.doc(id).set(Object.assign({}, changes))
+  .then(()=>{registered=false})
+  .catch(()=>{console.log('no se creo con el id'+docRef)})
 }
 
-var registered=false
 
 //FUNCTIONS
 let selectedTab=()=>{app.tab.show('#tab-'+tab)}
