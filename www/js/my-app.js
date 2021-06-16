@@ -104,7 +104,7 @@ $$(document).on('page:init', '.page[data-name="login"]', function (e) {
 //content init
 $$(document).on('page:init', '.page[data-name="content"]', function (e) {
   selectedTab()
-  updateProfile()
+  //updateProfile() just here for test purpouses.
 })
 
 //DATABASE RELATED
@@ -112,7 +112,7 @@ $$(document).on('page:init', '.page[data-name="content"]', function (e) {
 //when a new person Registers, this functions add a new person to de collection
 let createUser = () =>{
   let user = firebase.auth().currentUser;
-  let newUser = new Users(user.userName ||'', user.userSurname ||'', user.userAge||'', user.profilePic ||'', user.userLevel ||'', user.userCourses ||'', user.userActivity ||'', user.userCV ||'')
+  let newUser = new Users(user.userName ||'', user.userSurname ||'', user.userAge||'', user.profilePic ||'', user.userLevel ||0, user.userCourses || [] , user.userActivity ||[], user.userCV ||'')
   console.log('Cree un User: '+ newUser) 
   changeUsers(newUser, currentEmail)
 }
@@ -120,7 +120,7 @@ let createUser = () =>{
 let updateProfile = () => {
   let user = usersCol.doc(currentEmail).get()
   .then(()=>{
-    let newUser = new Users(user.userName ||'', user.userSurname ||'', user.userAge||'', user.profilePic ||'', user.userLevel ||'', user.userCourses ||'', user.userActivity ||'', user.userCV ||'')//here i should put my new objects
+    let newUser = new Users(user.userName ||'', user.userSurname ||'', user.userAge||'', user.profilePic ||'', user.userLevel ||0, user.userCourses || [], user.userActivity ||[], user.userCV ||'')//here i should put my new objects
     changeUsers( newUser, currentEmail)
   })
   .catch((error)=>{console.log('error: '+error)})
@@ -132,7 +132,6 @@ let changeUsers = ( changes, id) => {
   .then(()=>{registered=false})
   .catch(()=>{console.log('no se creo con el id'+docRef)})
 }
-
 
 //FUNCTIONS
 let selectedTab=()=>{app.tab.show('#tab-'+tab)}
@@ -177,11 +176,7 @@ let fnRegister = () =>{
 }
 let checkLogin = () =>{ 
   var user = firebase.auth().currentUser;
-    if (user) {
-      app.loginScreen.close()
-    } else {
-      mainView.router.navigate('/login/')
-    }
+  user?app.loginScreen.close():mainView.router.navigate('/login/');
 }
 let fnLogin = () =>{
   currentEmail = $$('#loginMail').val();
@@ -212,6 +207,3 @@ let fnLogin = () =>{
     }
   });
 }
-
-
-
