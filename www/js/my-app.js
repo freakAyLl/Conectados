@@ -93,7 +93,7 @@ class Content{//class content objects content for each lesson
 let currentEmail= '';
 let registered=false;
 let tab=1;
-let name , surname , age
+let name , surname , age, userType
 /*-------------------------------------------                   ______  ---------------------------------------------------*/
 /*-------------------------------------------                  / DB  /  ---------------------------------------------------*/
 /*-------------------------------------------                 /_____/   ---------------------------------------------------*/
@@ -179,6 +179,23 @@ let promptGenerator = (key)=>{
   }
 }
 
+/*open dialogs and call for become teacher, the last one just set usertype and calls update rpofile */
+let becomeTeacherDialog = () =>{app.dialog.confirm('Estas seguro? una vez que te hagas profesor no podras volver para atras!', 'Hazte Profesor', becomeTeacher , almost )}
+let becomeTeacher = () =>{
+  userType='Teacher'
+  updateProfile()
+}
+/*Open Panels*/
+let panelOpener = () =>{
+  $$('.open-left-panel').on('click', function (e) {
+    app.panel.open('left');
+ });
+ $$('.panel-close').on('click', function (e) {
+  app.closePanel();
+});
+}
+
+/*Update every screen off the app*/
 let updateApp= (newUser)=>{
     console.log(newUser)
     console.log(newUser)
@@ -186,6 +203,8 @@ let updateApp= (newUser)=>{
     if(newUser.userSurname!=''){$$('#profileSurname').html(newUser.userSurname)}else{$$('#profileSurname').html('Inserte su apellido')}
     if(newUser.userAge!=''){$$('#profileAge').html(newUser.userAge)}else{$$('#profileAge').html('Inserte su edad')}
 }
+/*obtain data from database using doc and calls change compare to the object created locally, then pass the new object to other functions.
+IDEA: use to params to select collections and doc*/
 let updateProfile = () => {
   usersCol.doc(currentEmail).get()
   .then((object)=>{
@@ -199,37 +218,24 @@ let updateProfile = () => {
   })
   .catch((error)=>{console.log('error: '+error)})
 }
-let becomeTeacherDialog = () =>{app.dialog.confirm('Estas seguro? una vez que te hagas profesor no podras volver para atras!', 'Hazte Profesor', becomeTeacher , almost )}
-let becomeTeacher = () =>{}
-let changeUsers = ( changes, id) => {
+/*takes one object called changes, and one id and then uploads it to database
+IDEA: use a third argument to choose between collections to manage them with just one function. (collection, changes, id)*/
+let changeUsers = ( changes, id) => {//
   usersCol.doc(id).set(Object.assign({}, changes))
-  .then(()=>{registered=false})
+  .then(()=>{registered=false})//prevent catch to ececute
   .catch(()=>{console.log('no se creo con el id'+docRef)})
 }
 
-//when a new person Registers, this functions add a new person to de collection
+/*creates new user from class users and excecute change users with its new object and current email*/
 let createUser = () =>{
   let user = firebase.auth().currentUser;
   let newUser = new Users(user.userName , user.userSurname, user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV, user.userType)
   console.log('Cree un User: '+ newUser) 
   changeUsers(newUser, currentEmail)
 }
-
-//When someone clicks on update profile button (to develop) he can update his profile
-
-let panelOpener = () =>{
-  $$('.open-left-panel').on('click', function (e) {
-    // 'left' position to open Left panel
-    app.panel.open('left');
- });
- $$('.panel-close').on('click', function (e) {
-  app.closePanel();
-});
-}
-//Asign changes or new variables to collections
-//IDEA: use a third argument to choose between collections to manage them with just one function. (collection, changes, id)
-
+/*show selected tab*/
 let selectedTab=()=>{app.tab.show('#tab-'+tab)}
+/*add tab buttons*/
 let tabOptions =()=>{
   let options=document.querySelectorAll('.home-options')
   options.forEach((e)=>{
@@ -242,6 +248,7 @@ let tabOptions =()=>{
     })
   })
 }
+/*register new Users and updates their profile to look like others*/
 let fnRegister = () =>{
   currentEmail = $$('#registerMail').val();
   var password = $$('#registerPass').val();
@@ -268,12 +275,13 @@ let fnRegister = () =>{
             break
         }
     });
-
 }
+/*check if the current user is loged in*/
 let checkLogin = () =>{ 
   var user = firebase.auth().currentUser;
   user?app.loginScreen.close():mainView.router.navigate('/login/');
 }
+/*log in and Updates profile*/
 let fnLogin = () =>{
   currentEmail = $$('#loginMail').val();
   var password = $$('#loginPass').val();
@@ -304,6 +312,6 @@ let fnLogin = () =>{
     }
   });
 }
-
+/*just used to not write console.log during each test*/
 let allOk =() =>{ console.log('All ok')}
 let almost =() =>{ console.log('almost XD')}
