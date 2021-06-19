@@ -1,0 +1,99 @@
+<div class="page panel-bg" data-name="create">
+    <div class="navbar nav-opacity">
+      <div class="navbar-bg nav-opacity"></div>
+      <div class="navbar-inner nav-opacity sliding display-flex justify-content-center">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="if-not-md">Back</span>
+          </a>
+        </div>
+        <div class="title-text no-margin-right">Conectados <img class="title-logo" src="img/logo-final.png" alt="logo"></div>
+      </div>
+    </div>
+      <div class="page-content panel-bg">
+      <form class="list form-store-data panel-bg" id="my-form">
+        <ul>
+          <li>
+            <div class="item-content item-input panel-bg">
+              <div class="item-inner">
+                <div class="item-title item-label">Titulo de la clase</div>
+                <div class="item-input-wrap">
+                  <input type="text" name="name" placeholder="Titulo" id="creation-class-title" required />
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-input panel-bg">
+              <div class="item-inner">
+                <div class="item-title item-label">Resumen</div>
+                <div class="item-input-wrap">
+                  <input type="text" name="text" placeholder="Resumen" id="creation-class-summary" required/>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content panel-bg">
+              <div class="item-inner">
+                <div class="item-title">Abono para entrar</div>
+                <div class="item-after">
+                  <label class="toggle">
+                    <input type="checkbox" name="switch" id="abono"value="yes" /><i class="toggle-icon"></i>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="invisible panel-bg" id=priceField>
+            <div class="item-content item-input panel-bg">
+              <div class="item-inner">
+                <div class="item-title item-label">Precio</div>
+                <div class="item-input-wrap">
+                  <input type="text" name="text" id="creation-class-price" placeholder="Precio en pesos" />
+                </div>
+              </div>
+            </div> 
+          </li>
+          <li class="panel-bg">
+            <div class="item-content item-input panel-bg">
+              <div class="item-inner">
+                <div class="item-title item-label">Link de videollamada</div>
+                <div class="item-input-wrap">
+                  <input type="text" name="link" placeholder="Link" id="creation-class-link" required/>
+                </div>
+              </div>
+            </div>
+            <p class="panel-bg"><small> No tienes videollamada? Haz <a href="http://meet.google.com/new"><u>Click aqui</u></a>. Luego copia y pegua el link nuevamente en el campo seleccionado. </small></p>
+          </li>
+        </ul>
+        <div class="block-title">Inline Picker / Date-time</div>
+        <div class="list no-margin">
+          <ul>
+            <li>
+              <div class="item-content item-input">
+                <div class="item-inner">
+                  <div class="item-input-wrap">
+                    <input type="text" placeholder="Date Time" readonly="readonly" id="demo-picker-date" />
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="block block-strong no-padding no-margin margin-bottom">
+          <div id="demo-picker-date-container"></div>
+        </div>
+      </div>
+      </form>
+       
+      <div class="fab fab-extended fab-center-bottom home-courses" id="createClassBtn">
+        <a href="#">
+          <i class="icon f7-icons if-not-md">plus</i>
+          <i class="icon material-icons md-only">add</i>
+          <div class="fab-text">Create</div>
+        </a>
+      </div>
+    </div>
+  </div>

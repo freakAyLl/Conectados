@@ -31,12 +31,19 @@
         <!-- Your main view, should have "view-main" class -->
         <div class="view view-main">
         <!-- Initial Page, "data-name" contains page name -->
-          <div data-name="index" class="page">
+          <div data-name="index" class="page ">
             <!-- Side Panels -->
             <div class = "panel-overlay"></div>      
             <div class = "panel panel-left panel-reveal panel-cover panel-bg">
-              <div class = "panel-bg block block-strong margin-left">
+              <div id="lateralPanel" class = "panel-bg block block-strong margin-left">
                   <p>Menu</p>
+                  <button class="button button-fill color-red" id="becomeTeacherBtn" >Hazte Profesor</button>
+              </div>
+            </div>
+            <div class = "panel-overlay"></div>  
+            <div class = "panel panel-right panel-reveal panel-cover panel-bg">
+              <div class = "panel-bg block block-strong margin-right">
+                  <p>gratz tu plan workeo</p>
                   <button class="button button-fill color-red" id="becomeTeacherBtn" >Hazte Profesor</button>
               </div>
             </div>
@@ -101,7 +108,7 @@
               <div>
                 <div class="row">
                   <a href="#" class="home-options button margin-top home-clases display-flex flex-direction-column justify-content-flex-end elevation-1 elevation-hover-5 elevation-pressed-2 col-50 ">
-                    <img src="" alt="aca estaria">
+                    <span class="material-icons">group</span>
                     <p class="text-color-black no-margin-bottom">Clases</p>
                   </a>      
                   <a href="#" class="home-options button margin-top home-fav display-flex flex-direction-column justify-content-flex-end elevation-1 elevation-hover-5 elevation-pressed-2 col-50 ">

@@ -15,20 +15,15 @@ var app = new Framework7({//defino una nueva instancia de mi framework7 llamada 
     // Add default routes
     routes: [
       {path:'/index/', url: 'index.html',},
-      {path: '/tienda/', url: 'tienda.html'},
-      {path: '/favoritos/', url: 'favoritos.html'},
-      {path: '/cursos/', url: 'cursos.html'},
-      {path: '/clases/', url: 'clases.html'},
       {path: '/login/', url: 'login.html'},
-      {path: '/register/', url: 'register.html'},
       {path: '/content/', url: 'content.html'},
+      {path: '/create/', url: 'create.html'},
     ]
     // ... other parameters
   });
 var mainView = app.views.create('.view-main');
-//Objetos
 
-
+//Clases
 class Users{
   constructor(userName, userSurname, userAge, profilePic, userLevel, userCourses, userActivity, userCV, userType){
     this.userName = userName ||'';
@@ -36,19 +31,16 @@ class Users{
     this.userAge = userAge ||'';
     this.profilePic = profilePic ||'';
     this.userLevel = userLevel ||0;
-    this.userCourses = userCourses ||[];
     this.userActivity = userActivity ||[];
     this.userCV = userCV ||''; //teachers only
     this.userType = userType || 'Student'
   }
 }
 class Classes{//class classes create objects classes
-  constructor(idClasses,className, creatorMail, classShedule, classOverallSumary, classSumary, classRequirements, classPrice,  classVideoCall,  classDelayAllowed, classPicture){
-    this.idClasses = idClasses;
+  constructor(className, creatorMail, classShedule, classSumary, classRequirements, classPrice,  classVideoCall,  classDelayAllowed, classPicture){
     this.className = className  ||'';
     this.creatorMail = creatorMail  ||'';
     this.classShedule = classShedule  ||'';
-    this.classOverallSumary = classOverallSumary  ||'';
     this.classSumary = classSumary  ||'';
     this.classRequirements = classRequirements || [];
     this.classPrice = classPrice  || 0;
@@ -93,7 +85,7 @@ class Content{//class content objects content for each lesson
 let currentEmail= '';
 let registered=false;
 let tab=1;
-let name , surname , age, userType
+let name , surname , age, userType // usable just when profile is updated
 /*-------------------------------------------                   ______  ---------------------------------------------------*/
 /*-------------------------------------------                  / DB  /  ---------------------------------------------------*/
 /*-------------------------------------------                 /_____/   ---------------------------------------------------*/
@@ -105,7 +97,8 @@ let name , surname , age, userType
 /*-------------------------------------------        ``````             ---------------------------------------------------*/
 let db= firebase.firestore()
 //COLLECTIONS
-let usersCol= db.collection('Users')
+let usersCol = db.collection('Users')
+let classesCol = db.collection('Clases')
 
 /*--------------------------------------------                   ______  ---------------------------------------------------*/
 /*--------------------------------------------                  /INIT /  ---------------------------------------------------*/
@@ -117,7 +110,6 @@ let usersCol= db.collection('Users')
 /*--------------------------------------------       | || |/             ---------------------------------------------------*/
 /*--------------------------------------------       ``````             ----------------------------------------------------*/
 //inicio de index
-
 $$(document).on('page:init','.page[data-name="index"]', function (e) {
   checkLogin()
   tabOptions()
@@ -129,6 +121,13 @@ $$(document).on('page:init','.page[data-name="index"]', function (e) {
   $$('#profileAge').on('click', ()=>{promptGenerator('a')})
 
 })
+//create init
+$$(document).on('page:init', '.page[data-name="create"]', function (e) {
+  datePicker()
+  switchBtn()
+  $$('#createClassBtn').on('click', createClass)
+
+})
 //login init
 $$(document).on('page:init', '.page[data-name="login"]', function (e) {
   $$('#register').on('click', fnRegister)
@@ -137,6 +136,7 @@ $$(document).on('page:init', '.page[data-name="login"]', function (e) {
 //content init
 $$(document).on('page:init', '.page[data-name="content"]', function (e) {
   selectedTab()
+  app.ptr.create('.ptr-content')
 })
 
  /*
@@ -155,6 +155,10 @@ $$(document).on('page:init', '.page[data-name="content"]', function (e) {
 /*--------------------------------------------       |    |              ---------------------------------------------------*/
 /*--------------------------------------------       | || |              ---------------------------------------------------*/
 /*--------------------------------------------     ````````              ---------------------------------------------------*/
+
+
+
+
 let promptGenerator = (key)=>{
   console.log('ejecutado')
   switch (key){
@@ -178,7 +182,18 @@ let promptGenerator = (key)=>{
       break;
   }
 }
-
+let switchBtn = () =>{
+  $$('#abono').on('click', ()=>{
+    console.log('voy a ver si tengo clases')
+    if($$('#priceField').hasClass('visible')){
+      console.log('visible')
+      $$('#priceField').removeClass('visible').addClass('invisible')
+    }else{
+      console.log('invisible')
+      $$('#priceField').removeClass('invisible').addClass('visible')
+    }
+  })
+}
 /*open dialogs and call for become teacher, the last one just set usertype and calls update rpofile */
 let becomeTeacherDialog = () =>{app.dialog.confirm('Estas seguro? una vez que te hagas profesor no podras volver para atras!', 'Hazte Profesor', becomeTeacher , almost )}
 let becomeTeacher = () =>{
@@ -187,22 +202,67 @@ let becomeTeacher = () =>{
 }
 /*Open Panels*/
 let panelOpener = () =>{
-  $$('.open-left-panel').on('click', function (e) {
-    app.panel.open('left');
- });
- $$('.panel-close').on('click', function (e) {
-  app.closePanel();
-});
+  $$('.open-left-panel').on('click',  (e)=> { app.panel.open('left')});
+  $$('.panel-close').on('click', (e)=> { app.closePanel()});
 }
 
+let newButtons=()=>{
+  $$('#createClass').on('click', (e) =>{
+    console.log('click')
+    mainView.router.navigate('/create/');
+    console.log('clicky')
+  })
+}
 /*Update every screen off the app*/
 let updateApp= (newUser)=>{
-    console.log(newUser)
-    console.log(newUser)
-    if(newUser.userName!=''){$$('#profileName').html(newUser.userName)}else{$$('#profileName').html('Inserte su Nombre')}
-    if(newUser.userSurname!=''){$$('#profileSurname').html(newUser.userSurname)}else{$$('#profileSurname').html('Inserte su apellido')}
-    if(newUser.userAge!=''){$$('#profileAge').html(newUser.userAge)}else{$$('#profileAge').html('Inserte su edad')}
+  console.log(newUser)
+  console.log(newUser)
+  if(newUser.userType=='Teacher'){
+    $$('#becomeTeacherBtn').remove()
+    $$('#lateralPanel').html(`
+    <p class='block-title'>Menu de profesores</p>
+    <div id="createClass" class="button button-fill panel-close  margin-vertical">Crear Clase</div>
+    <div id="uploadCourse" class="button button-fill panel-close margin-vertical">Subir Curso</div>
+    `)
+    newButtons()
+  }
+  if(newUser.userName!=''){$$('#profileName').html(newUser.userName)}else{$$('#profileName').html('Inserte su Nombre')}
+  if(newUser.userSurname!=''){$$('#profileSurname').html(newUser.userSurname)}else{$$('#profileSurname').html('Inserte su apellido')}
+  if(newUser.userAge!=''){$$('#profileAge').html(newUser.userAge)}else{$$('#profileAge').html('Inserte su edad')}
 }
+/* create a object class from form info, and calls colUpdate with the object
+and an id generated by mail + date*/
+let createClass = () =>{
+  let mail = currentEmail
+  let price = 0
+  let classDelayAllowed = ''
+  let classPicture = ''
+  let classRequirements = ''
+  let className =$$('#creation-class-title').val()
+  let classLink = $$('#creation-class-link').val()
+  let classSumary = $$('#creation-class-summary').val()
+  let classShedule = $$('#demo-picker-date').val()
+  if($$('#creation-class-price').val() != ''){price = $$('#creation-class-price').val() }
+  let id =currentEmail+ ' '+ classShedule
+  console.log('collecting data')
+  if(className=='' || classLink==''|| classSumary==''){ 
+    app.dialog.alert('Por favor cmoplete todos los campos')
+    return
+  }
+  let newClass= new Classes(className, mail, classShedule, classSumary, classRequirements , price,  classLink,  classDelayAllowed, classPicture|| '');
+  colUpdate(classesCol, newClass, id)
+  tab=1 
+  app.dialog.alert('Clase creada exitosamente!')
+  mainView.router.navigate('/index/')
+}
+/*takes one object called changes, and one id and then uploads it to database
+IDEA: use a third argument to choose between collections to manage them with just one function. (collection, changes, id)*/
+let colUpdate = (colection,changes, id) => {//
+  colection.doc(id).set(Object.assign({}, changes))
+  .then(()=>{registered=false})//prevent catch to excecute
+  .catch(()=>{console.log('no se creo con el id'+docRef)})
+}
+
 /*obtain data from database using doc and calls change compare to the object created locally, then pass the new object to other functions.
 IDEA: use to params to select collections and doc*/
 let updateProfile = () => {
@@ -210,31 +270,28 @@ let updateProfile = () => {
   .then((object)=>{
     let user= object.data()
     console.log('updating profile' +user)
-    let newUser = new Users(name ||user.userName , surname || user.userSurname, age || user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV, user.userType)//here i should put my new objects
+    let newUser = new Users(name || user.userName , surname || user.userSurname, age || user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV, userType || user.userType)//here i should put my new objects
     console.log('downlodaing data'+ user)
     console.log(newUser)
-    changeUsers( newUser, currentEmail)
+    colUpdate( usersCol,newUser, currentEmail)
     updateApp(newUser)
   })
   .catch((error)=>{console.log('error: '+error)})
 }
-/*takes one object called changes, and one id and then uploads it to database
-IDEA: use a third argument to choose between collections to manage them with just one function. (collection, changes, id)*/
-let changeUsers = ( changes, id) => {//
-  usersCol.doc(id).set(Object.assign({}, changes))
-  .then(()=>{registered=false})//prevent catch to ececute
-  .catch(()=>{console.log('no se creo con el id'+docRef)})
-}
+
+
 
 /*creates new user from class users and excecute change users with its new object and current email*/
 let createUser = () =>{
   let user = firebase.auth().currentUser;
   let newUser = new Users(user.userName , user.userSurname, user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV, user.userType)
   console.log('Cree un User: '+ newUser) 
-  changeUsers(newUser, currentEmail)
+  colUpdate(usersCol ,newUser, currentEmail)
 }
+
 /*show selected tab*/
 let selectedTab=()=>{app.tab.show('#tab-'+tab)}
+
 /*add tab buttons*/
 let tabOptions =()=>{
   let options=document.querySelectorAll('.home-options')
@@ -248,6 +305,7 @@ let tabOptions =()=>{
     })
   })
 }
+
 /*register new Users and updates their profile to look like others*/
 let fnRegister = () =>{
   currentEmail = $$('#registerMail').val();
@@ -276,11 +334,13 @@ let fnRegister = () =>{
         }
     });
 }
+
 /*check if the current user is loged in*/
 let checkLogin = () =>{ 
   var user = firebase.auth().currentUser;
   user?app.loginScreen.close():mainView.router.navigate('/login/');
 }
+
 /*log in and Updates profile*/
 let fnLogin = () =>{
   currentEmail = $$('#loginMail').val();
@@ -312,6 +372,82 @@ let fnLogin = () =>{
     }
   });
 }
+
+/*generates date picker on create view*/
+let datePicker=()=>{
+  var today = new Date();
+  var pickerInline = app.picker.create({
+    containerEl: '#demo-picker-date-container',
+    inputEl: '#demo-picker-date',
+    toolbar: false,
+    rotateEffect: true,
+    value: [
+      today.getMonth(),
+      today.getDate(),
+      today.getFullYear(),
+      today.getHours(),
+      today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes()
+    ],
+    formatValue: function (values, displayValues) {
+      return displayValues[0] + ' ' + values[1] + ' ' + values[2] + ' ' + values[3] + ':' + values[4];
+    },
+    cols: [
+      // Months
+      {
+        values: ('0 1 2 3 4 5 6 7 8 9 10 11').split(' '),
+        displayValues: ('Enero Febrero Marzo Abril Mayo Junio Julio Agosto Septiembre Octubre Noviembre Diciembre').split(' '),
+        textAlign: 'left'
+      },
+      // Days
+      {
+        values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+      },
+      // Years
+      {
+        values: (function () {
+          var arr = [];
+          for (var i = 2021; i <= 2030; i++) { arr.push(i); }
+          return arr;
+        })(),
+      },
+      // Space divider
+      {
+        divider: true,
+        content: '&nbsp;&nbsp;'
+      },
+      // Hours
+      {
+        values: (function () {
+          var arr = [];
+          for (var i = 0; i <= 23; i++) { arr.push(i); }
+          return arr;
+        })(),
+      },
+      // Divider
+      {
+        divider: true,
+        content: ':'
+      },
+      // Minutes
+      {
+        values: (function () {
+          var arr = [];
+          for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
+          return arr;
+        })(),
+      }
+    ],
+    on: {
+      change: function (picker, values, displayValues) {
+        var daysInMonth = new Date(picker.value[2], picker.value[0] * 1 + 1, 0).getDate();
+        if (values[1] > daysInMonth) {
+          picker.cols[1].setValue(daysInMonth);
+        }
+      },
+    }
+  });
+}
+
 /*just used to not write console.log during each test*/
 let allOk =() =>{ console.log('All ok')}
 let almost =() =>{ console.log('almost XD')}

@@ -139,6 +139,9 @@
   background-color: blueviolet;
   border-radius: 10%;
 }
+.visible{
+  
+}
 .invisible{
   display:none;
   visibility:hidden;
