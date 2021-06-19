@@ -136,15 +136,31 @@ $$(document).on('page:init', '.page[data-name="login"]', function (e) {
 //content init
 $$(document).on('page:init', '.page[data-name="content"]', function (e) {
   selectedTab()
-  app.ptr.create('.ptr-content')
+  searchBar()
 })
 
- /*
+
+let searchBar=()=>{
+  for(let i=0; i<5;i++){
+    searchbar = app.searchbar.create({
+        el: '.searchbar-'+i,
+        searchContainer: '.list-'+i,
+        searchIn: '.item-title',
+        on: {
+          search(sb, query, previousQuery) {
+            console.log(query, previousQuery);
+          }
+        }
+      })
+  }
+}
+
+/*
  Teacher related to do.
   1. Obtain current user.
   2. Change user type.
   3. function to detect if is a teacher and show teacher options.
-  */
+*/
 
 /*--------------------------------------------        ____               ---------------------------------------------------*/
 /*--------------------------------------------      __|00|__     ______  ---------------------------------------------------*/
@@ -155,9 +171,6 @@ $$(document).on('page:init', '.page[data-name="content"]', function (e) {
 /*--------------------------------------------       |    |              ---------------------------------------------------*/
 /*--------------------------------------------       | || |              ---------------------------------------------------*/
 /*--------------------------------------------     ````````              ---------------------------------------------------*/
-
-
-
 
 let promptGenerator = (key)=>{
   console.log('ejecutado')
@@ -200,6 +213,7 @@ let becomeTeacher = () =>{
   userType='Teacher'
   updateProfile()
 }
+
 /*Open Panels*/
 let panelOpener = () =>{
   $$('.open-left-panel').on('click',  (e)=> { app.panel.open('left')});
@@ -255,6 +269,7 @@ let createClass = () =>{
   app.dialog.alert('Clase creada exitosamente!')
   mainView.router.navigate('/index/')
 }
+
 /*takes one object called changes, and one id and then uploads it to database
 IDEA: use a third argument to choose between collections to manage them with just one function. (collection, changes, id)*/
 let colUpdate = (colection,changes, id) => {//
@@ -278,8 +293,6 @@ let updateProfile = () => {
   })
   .catch((error)=>{console.log('error: '+error)})
 }
-
-
 
 /*creates new user from class users and excecute change users with its new object and current email*/
 let createUser = () =>{

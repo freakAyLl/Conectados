@@ -237,6 +237,12 @@
   width: auto;
   border: 3px solid blue ;
 }
+.card{
+  width: 92%!important;
+}
+.card-backdrop{
+  backdrop-filter: none!important;
+}
 .shape1{
   display: inline-block!important;
   position: absolute;
