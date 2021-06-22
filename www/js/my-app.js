@@ -159,16 +159,50 @@ let updateProfile = () => {
 
 /*takes all classes and arrange them by order*/
 let getClasses = ()=>{
+  let classArray=[]
   classesCol.get()
   .then((clases)=>{
-    console.log(clases)
     clases.forEach((doc)=>{
-      console.log(doc.id, '=>', doc.data())
+      if(checkDate(doc.data().classShedule)){classArray.push(doc.data())} //filter to push just future clasess
     })
+    classInsert(classArray)
   })
   .catch((error)=>console.log('me fui por el error'))
 }
-/*insert every class in the correct tab*/
+/*sort by date Classes and insert them as cards in tab*/
+let classInsert = (arr) =>{
+  arr.sort((a,b)=>{
+    return new Date(a.classShedule) - new Date(b.classShedule)
+  }) //sort by date 
+  let parent = document.getElementById('classTabContainer')
+  parent.innerHTML= ''
+
+  arr.forEach((eachClass)=>{
+    let li= document.createElement('li')
+    let time = eachClass.classShedule.split(' ')[3]+ '. '+ eachClass.classShedule.split(' ')[1]+ '/'+ eachClass.classShedule.split(' ')[0]+'/'+ eachClass.classShedule.split(' ')[2]   
+    console.log('consegui el '+li.innerHTML)
+    li.innerHTML=`<li class="item-content card card-expandable lazy lazy-fade-in demo-laz item-inner">
+              <div class="card-content">
+                <div class="" style="height: 30vh">
+                  <img src="/img/zumba.jpg" class="card-image" alt="">
+                  <i class='shape1'></i>
+                  <div class="card-header item-title text-color-white display-block">${eachClass.className}<br />
+                    <small style="opacity: 0.7">${time}</small>
+                  </div>
+                  <a href="#" class="link card-close card-opened-fade-in color-white"
+                    style="position: absolute; right: 15px; top: 15px">
+                    <i class="icon f7-icons">xmark_circle_fill</i>
+                  </a>
+                </div>
+                <div class="card-content-padding"> 
+                 ${eachClass.classVideoCall}
+                </div>
+              </div>
+            </li>`
+//change code above to make it look better
+    parent.appendChild(li)
+  })
+}
 /*
  Teacher related to do.
   1. Obtain current user.
@@ -253,15 +287,11 @@ let panelOpener = () =>{
 
 let newButtons=()=>{
   $$('#createClass').on('click', (e) =>{
-    console.log('click')
     mainView.router.navigate('/create/');
-    console.log('clicky')
   })
 }
 /*Update every screen off the app*/
 let updateApp= (newUser)=>{
-  console.log(newUser)
-  console.log(newUser)
   if(newUser.userType=='Teacher'){
     $$('#becomeTeacherBtn').remove()
     $$('#lateralPanel').html(`
@@ -294,7 +324,6 @@ let createClass = () =>{
       return
     }else{
       price = $$('#creation-class-price').val() 
-      console.log(price)
     }
   }
   let id =currentEmail+ ' '+ classShedule
@@ -303,12 +332,10 @@ let createClass = () =>{
     app.dialog.alert('Por favor complete todos los campos')
     return
   }
-  console.log(classShedule)
   if(checkDate(classShedule)!= true){ 
     app.dialog.alert('Por favor Inserte una fecha valida')
     return
   }
-  console.log(classShedule)
   let newClass= new Classes(className, mail, classShedule, classSumary, classRequirements , price,  classLink,  classDelayAllowed, classPicture|| '');
   colUpdate(classesCol, newClass, id)
   tab=1 
@@ -326,7 +353,6 @@ let checkDate=(str)=>{
   if (timePast){
     return false
   }else{
-    classShedule = classDate.getTime()
     return true
   }
 }
@@ -336,7 +362,6 @@ IDEA: use a third argument to choose between collections to manage them with jus
 let colUpdate = (colection,changes, id) => {//
   colection.doc(id).set(Object.assign({}, changes))
   .then(()=>{
-    console.log(changes)
     registered=false//prevent catch to excecute
   })
   .catch(()=>{console.log('no se creo con el id'+docRef)})
