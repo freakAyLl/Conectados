@@ -78,20 +78,23 @@
        url('../fonts/poppins-v13-latin-900italic.svg#Poppins') format('svg'); /* Legacy iOS */
 }
 /*index*/
-.panel-bg{
-  background-color: rgb(200, 191, 231)!important;
+.icons-home{
+font-size: 4rem;
 }
-.card-expandable-index{
-  background-color: rgb(154, 90, 214);
+.back-btn{
+position: absolute!important;
+left: 1vw;
 }
+
 .btn-panel{
   position: absolute;
   top: 0vh;
   left: 3%;
 }
-.card-expandable{
-  height: 12vh;
+.panel-bg{
+  background-color: rgb(200, 191, 231)!important;
 }
+
 .page-content{
   height: 100vh;
 }
@@ -131,6 +134,7 @@
   background-color: rgba(255, 255, 255, 0.3)!important
 }
 /*Profile*/
+
 .last-c{
   width: 95%;
   margin-left: auto;
@@ -223,6 +227,17 @@
   margin-bottom: 1vh;
 }
 /*Cards*/
+
+.card-expandable-index{
+  background-color: rgb(154, 90, 214);
+}
+.card-expandable{
+  height: 12vh;
+}
+.class-card{
+height: 90vh;
+width: 95vw;
+}
 .card-image{
   position: absolute;
   height: 30vh;
@@ -242,6 +257,7 @@
 }
 .card-backdrop{
   backdrop-filter: none!important;
+  height: 0px!important;
 }
 .shape1{
   display: inline-block!important;
@@ -279,7 +295,24 @@
   background-color: rgb(255, 123, 109);
   transform: skew(35deg);
 }
+.sub-title-card{
+  line-height: 80%;
+  opacity: 0.7;
+}
+.card-header.item-title.text-color-white.display-block.no-margin-bottom {
+  line-height: 1.2;
+}
 
+.joinVideocall{
+  position: absolute;
+  right: 3%;
+  bottom: -5vh;
+}
+.card-btn{
+  position: absolute;
+  bottom: -5vh;
+  left: 3%;
+}
 /*navbar*/
 
 

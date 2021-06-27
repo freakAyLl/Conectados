@@ -33,17 +33,13 @@
         <!-- Initial Page, "data-name" contains page name -->
           <div data-name="index" class="page ">
             <!-- Side Panels -->
-            <div class = "panel-overlay"></div>      
-            <div class = "panel panel-left panel-reveal panel-cover panel-bg">
-              <div id="lateralPanel" class = "panel-bg block block-strong margin-left">
+            <div class = "panel-overlay"></div>     
+            <!-- adentro del panel --> 
+            <div class = "panel panel-left panel-reveal panel-cover">
+              <div id="lateralPanel" class = "block block-strong margin-left">
+                <!-- titulo -->
                   <p>Menu</p>
-                  <button class="button button-fill color-red" id="becomeTeacherBtn" >Hazte Profesor</button>
-              </div>
-            </div>
-            <div class = "panel-overlay"></div>  
-            <div class = "panel panel-right panel-reveal panel-cover panel-bg">
-              <div class = "panel-bg block block-strong margin-right">
-                  <p>gratz tu plan workeo</p>
+                  <!-- Botones -->
                   <button class="button button-fill color-red" id="becomeTeacherBtn" >Hazte Profesor</button>
               </div>
             </div>
@@ -51,8 +47,13 @@
                 <!-- Scrollable page content -->
                 
             <div class="page-content no-margin block display-flex flex-direction-column justify-content-space-around">
+              <!-- abridor del panel -->
               <div class="btn-panel">
-                <p><a href = "#" class = "open-left-panel"><span class="material-icons">menu</span></a></p>
+                <p>
+                  <a href = "#" class = "open-left-panel">
+                    <span class="material-icons">menu</span>
+                  </a>
+                </p>
               </div>
               <div class="text-align-center">
                 <p class="title-text no-margin-right">Conectados <img class="title-logo" src="img/logo-final.png" alt="logo"></p>
@@ -108,21 +109,29 @@
               <div>
                 <div class="row">
                   <a href="#" class="home-options button margin-top home-clases display-flex flex-direction-column justify-content-flex-end elevation-1 elevation-hover-5 elevation-pressed-2 col-50 ">
-                    <span class="material-icons">group</span>
+                    <span class="material-icons icons-home text-color-black  ">
+                      school
+                      </span>
                     <p class="text-color-black no-margin-bottom">Clases</p>
                   </a>      
                   <a href="#" class="home-options button margin-top home-fav display-flex flex-direction-column justify-content-flex-end elevation-1 elevation-hover-5 elevation-pressed-2 col-50 ">
-                    <img src="" alt="aca estaria">
+                    <span class="material-icons icons-home text-color-black   ">
+                      star
+                      </span>
                     <p class="text-color-black no-margin-bottom">Favoritos</p>
                   </a>
                 </div>
                 <div class="row">
                   <a href="#" class="home-options button margin-top home-courses display-flex flex-direction-column justify-content-flex-end elevation-1 elevation-hover-5 elevation-pressed-2 col-50">
-                    <img src="" alt="aca estaria">
+                    <span class="material-icons icons-home text-color-black   ">
+                        import_contacts
+                      </span>
                     <p class="text-color-black no-margin-bottom">Mis Cursos</p>
                   </a>
-                  <a href="#" class="home-options button margin-top home-store display-flex flex-direction-column justify-content-flex-end elevation-1 elevation-hover-5 elevation-pressed-2 col-50 ">
-                    <img src="" alt="aca estaria">
+                  <a href="#" class="home-options button margin-top home-store  display-flex flex-direction-column justify-content-flex-end elevation-1 elevation-hover-5 elevation-pressed-2 col-50 ">
+                    <span class="material-icons icons-home text-color-black   ">
+                      store
+                      </span>                      
                     <p class="text-color-black no-margin-bottom">Tienda</p>
                   </a>
                 </div>

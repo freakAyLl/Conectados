@@ -37,12 +37,12 @@ class Users{
   }
 }
 class Classes{//class classes create objects classes
-  constructor(className, creatorMail, classShedule, classSumary, classRequirements, classPrice,  classVideoCall,  classDelayAllowed, classPicture){
+  constructor(className, creatorMail, classShedule, classSumary, classDuration, classPrice,  classVideoCall,  classDelayAllowed, classPicture){
     this.className = className  ||'';
     this.creatorMail = creatorMail  ||'';
     this.classShedule = classShedule  ||'';
     this.classSumary = classSumary  ||'';
-    this.classRequirements = classRequirements || [];
+    this.classDuration = classDuration || 0;
     this.classPrice = classPrice  || 0;
     this.classVideoCall = classVideoCall  ||'';
     this.classDelayAllowed = classDelayAllowed  || 10;
@@ -124,7 +124,6 @@ $$(document).on('page:init','.page[data-name="index"]', function (e) {
 //create init
 $$(document).on('page:init', '.page[data-name="create"]', function (e) {
   datePicker()
-  switchBtn()
   $$('#createClassBtn').on('click', createClass)
 
 })
@@ -139,7 +138,22 @@ $$(document).on('page:init', '.page[data-name="content"]', function (e) {
   getClasses()
   searchBar()
 })
+/*
+$$(document).on('card:open', '.page[data-name="content"]', function (e){ 
+  
+  classesbtn()
+  
+})*/
 
+/*--------------------------------------------        ____               ---------------------------------------------------*/
+/*--------------------------------------------      __|00|__     ______  ---------------------------------------------------*/
+/*--------------------------------------------      |______|    / FN  /  ---------------------------------------------------*/
+/*--------------------------------------------    ＼（〇_ｏ）／ /_____/   ---------------------------------------------------*/
+/*--------------------------------------------      \|    |/             ---------------------------------------------------*/
+/*--------------------------------------------      FUNCTIONS            ---------------------------------------------------*/
+/*--------------------------------------------       |    |              ---------------------------------------------------*/
+/*--------------------------------------------       | || |              ---------------------------------------------------*/
+/*--------------------------------------------     ````````              ---------------------------------------------------*/
 
 /*obtain data from database using doc and calls change compare to the object created locally, then pass the new object to other functions.
 IDEA: use to params to select collections and doc*/
@@ -163,63 +177,144 @@ let getClasses = ()=>{
   classesCol.get()
   .then((clases)=>{
     clases.forEach((doc)=>{
-      if(checkDate(doc.data().classShedule)){classArray.push(doc.data())} //filter to push just future clasess
+      console.log(doc.data().classShedule)
+      if(checkDate(doc.data().classShedule)){
+        classArray.push(doc.data())} //filter to push just future clases IDEA: add a param to show the classes with dellay alowed also
     })
+    console.log(classArray)
     classInsert(classArray)
   })
   .catch((error)=>console.log('me fui por el error'))
 }
-/*sort by date Classes and insert them as cards in tab*/
+
+/*Check if the date is correct while creating a new class*/
+let checkDate=(str)=>{
+  let now = new Date()
+  let classDate = new Date(str)
+  console.log('classdate '+classDate.getTime())
+  console.log('ahora '+now)
+  let timePast = now.getTime()>classDate.getTime()
+  console.log(timePast)
+  if (timePast){
+    console.log('tu clase ya paso')
+    return false
+  }else{
+    console.log('tu clase no paso')
+    return true
+  }
+}
+
+/*sort by date Classes and insert them as cards in tab
+IDEA: Change the code below to make a better looking card when expanded*/
 let classInsert = (arr) =>{
-  arr.sort((a,b)=>{
-    return new Date(a.classShedule) - new Date(b.classShedule)
-  }) //sort by date 
+  arr.sort((a,b)=>{return new Date(a.classShedule) - new Date(b.classShedule)}) //sort by date 
   let parent = document.getElementById('classTabContainer')
   parent.innerHTML= ''
-
+  let i=0, j=0, toErrase=''
   arr.forEach((eachClass)=>{
-    let li= document.createElement('li')
-    let time = eachClass.classShedule.split(' ')[3]+ '. '+ eachClass.classShedule.split(' ')[1]+ '/'+ eachClass.classShedule.split(' ')[0]+'/'+ eachClass.classShedule.split(' ')[2]   
-    console.log('consegui el '+li.innerHTML)
-    li.innerHTML=`<li class="item-content card card-expandable lazy lazy-fade-in demo-laz item-inner">
-              <div class="card-content">
-                <div class="" style="height: 30vh">
-                  <img src="/img/zumba.jpg" class="card-image" alt="">
-                  <i class='shape1'></i>
-                  <div class="card-header item-title text-color-white display-block">${eachClass.className}<br />
-                    <small style="opacity: 0.7">${time}</small>
-                  </div>
-                  <a href="#" class="link card-close card-opened-fade-in color-white"
-                    style="position: absolute; right: 15px; top: 15px">
-                    <i class="icon f7-icons">xmark_circle_fill</i>
-                  </a>
-                </div>
-                <div class="card-content-padding"> 
-                 ${eachClass.classVideoCall}
-                </div>
-              </div>
-            </li>`
-//change code above to make it look better
-    parent.appendChild(li)
+    usersCol.doc(eachClass.creatorMail).get()
+    .then((teacher)=>{
+      let classTeacher=teacher.data()
+      let name= classTeacher.userName + ' ' + classTeacher.userSurname
+      let cv = classTeacher.userCV
+      let price = 'gratis!'
+      //console.log('creator'+eachClass.creatorMail)
+      if(eachClass.classPrice!=0){[price= 'por $'+eachClass.classPrice+'!']}
+      let li= document.createElement('li')
+      let cSh = eachClass.classShedule
+      let index = cSh.indexOf('-')
+      let index2 = cSh.indexOf(' ')
+      let time = cSh[index+1]+cSh[index+2]+'-'+ cSh.substring(0,index)+ ' | '+cSh.substring(index2, cSh.length)+'hs' 
+      console.log(cSh)
+      console.log(time)
+      console.log('consegui el '+li.innerHTML)
+      if(eachClass.creatorMail == currentEmail){
+        cardBtn=`<div class="fab fab-left-bottom card-btn color-red erraseVideocall open-confirm" id="erraseVideocall${j}">
+        <a href="#">
+          <span class="material-icons ">delete_forever</span>
+        </a>
+      </div>
+      <div class="fab fab-extended fab-right-bottom color-blue joinVideocall" id="JoinVideocall${i}">
+          <a href="#">
+            <span class="material-icons margin-left">video_call</span>
+            <div class="fab-text">Unirse ${price}</div>
+          </a>
+        </div>`
+      }else{
+        cardBtn=`
+        <div class="fab fab-left-bottom card-btn color-yellow favTeacher" id="favTeacher${j}">
+        <a href="#">
+          <span class="material-icons ">star</span>
+        </a>
+      </div>
+        <div class="fab fab-extended fab-right-bottom color-blue joinVideocall" id="JoinVideocall${i}">
+        <a href="#">
+          <span class="material-icons margin-left">
+            video_call
+            </span>
+          <div class="fab-text">Unirse ${price}</div>
+        </a>
+      </div>`
+      }
+      li.innerHTML=`<li class="item-content card card-expandable lazy lazy-fade-in demo-laz item-inner">
+      <div class="card-content">
+        <div class="" style="height: 30vh">
+          <img src="/img/zumba.jpg" class="card-image" alt="">
+          <i class='shape1'></i>
+          <div class="card-header item-title text-color-white display-block no-margin-bottom">${eachClass.className}<br />
+            <small class="sub-title-card"> ${time} <br/> ${name}</small>
+          </div>
+          <a href="#" class="link card-close card-opened-fade-in color-white"
+            style="position: absolute; right: 15px; top: 15px">
+            <i class="icon f7-icons">xmark_circle_fill</i>
+          </a>
+        </div>
+        <div class="card-content-padding">
+          <div class="block-title text-align-center text-color-black ">Clase</div>
+          <p>${eachClass.classSumary}</p>
+          <div class="block-title text-align-center text-color-black">Profesor:</div>
+          <p>${cv}</p>
+      </div>
+      ${cardBtn} 
+    </li>`
+      parent.appendChild(li)
+      $$('#JoinVideocall'+i).on('click',function(e){
+        console.log(e)
+        //join videocall
+      })
+      $$('#erraseVideocall'+j).on('click',function(e){
+        toErrase= currentEmail+' '+ cSh
+        app.dialog.confirm('Estas seguro que deseas borrar esta clase?', 'Borrar clase', function (){erraseClass(toErrase)})
+      })
+      $$('#favTeacher'+j).on('click',function(e){
+        console.log('faved'+e)
+        //fav the teacher
+        favTeacher()
+      })
+      j++
+      i++
+    })
+    .catch((error)=>{console.log(error)})
   })
 }
-/*
- Teacher related to do.
-  1. Obtain current user.
-  2. Change user type.
-  3. function to detect if is a teacher and show teacher options.
-*/
-
-/*--------------------------------------------        ____               ---------------------------------------------------*/
-/*--------------------------------------------      __|00|__     ______  ---------------------------------------------------*/
-/*--------------------------------------------      |______|    / FN  /  ---------------------------------------------------*/
-/*--------------------------------------------    ＼（〇_ｏ）／ /_____/   ---------------------------------------------------*/
-/*--------------------------------------------      \|    |/             ---------------------------------------------------*/
-/*--------------------------------------------      FUNCTIONS            ---------------------------------------------------*/
-/*--------------------------------------------       |    |              ---------------------------------------------------*/
-/*--------------------------------------------       | || |              ---------------------------------------------------*/
-/*--------------------------------------------     ````````              ---------------------------------------------------*/
-
+/*take current user class, delete it from database*/
+let erraseClass = (toErrase)=>{
+  console.log('I will errase '+toErrase)
+  classesCol.doc(toErrase).delete()
+  .then(()=>{
+    getClasses()
+    app.card.close()
+    app.dialog.alert('Clase borrada')
+    console.log('borradaso pa')
+  })
+  .catch((error)=>{
+    console.log(error)
+  })
+}
+/*take class teacher and fav it*/
+let favTeacher = () => {
+  console.log('yep')
+}
 /*generates prompts for every field, selecting which one was clicked.*/
 let promptGenerator = (key)=>{
   console.log('ejecutado')
@@ -296,8 +391,9 @@ let updateApp= (newUser)=>{
     $$('#becomeTeacherBtn').remove()
     $$('#lateralPanel').html(`
     <p class='block-title'>Menu de profesores</p>
-    <div id="createClass" class="button button-fill panel-close  margin-vertical">Crear Clase</div>
-    <div id="uploadCourse" class="button button-fill panel-close margin-vertical">Subir Curso</div>
+    <div id="createClass" class="home-fav  text-color-black button button-fill panel-close  margin-vertical">Crear Clase</div>
+    <div id="uploadCourse" class="home-courses text-color-black button button-fill panel-close margin-vertical">Subir Curso</div>
+    <div id="createClass" class="home-store text-color-black button button-fill panel-close  margin-vertical">Subir Curriculum</div>
     `)
     newButtons()
   }
@@ -305,19 +401,22 @@ let updateApp= (newUser)=>{
   if(newUser.userSurname!=''){$$('#profileSurname').html(newUser.userSurname)}else{$$('#profileSurname').html('Inserte su apellido')}
   if(newUser.userAge!=''){$$('#profileAge').html(newUser.userAge)}else{$$('#profileAge').html('Inserte su edad')}
 }
+
+
 /* create a object class from form info, and calls colUpdate with the object
 and an id generated by mail + date
 IDEA: Separate Checkers*/
 let createClass = () =>{
   let mail = currentEmail
   let price = 0
-  let classDelayAllowed = ''
+  let classDelayAllowed = $$('#creation-class-dellay').val()
   let classPicture = ''
-  let classRequirements = ''
+  let classDuration = $$('#creation-class-duration').val()
   let className =$$('#creation-class-title').val()
   let classLink = $$('#creation-class-link').val()
   let classSumary = $$('#creation-class-summary').val()
-  let classShedule = $$('#demo-picker-date').val()
+  let classShedule = $$('#demo-calendar-date-time').val()
+  console.log(classShedule)
   if($$('#creation-class-price').val() != '' ){
     if(isNaN($$('#creation-class-price').val())){
       app.dialog.alert('Precio Invalido, por favor inserte un numero')
@@ -328,34 +427,22 @@ let createClass = () =>{
   }
   let id =currentEmail+ ' '+ classShedule
   console.log('collecting data')
-  if(className=='' || classLink==''|| classSumary==''){ 
+  if(className=='' || classLink==''|| classSumary=='' || classDelayAllowed==''|| classDuration==''){ 
     app.dialog.alert('Por favor complete todos los campos')
     return
   }
-  if(checkDate(classShedule)!= true){ 
+  if(classShedule=='' || checkDate(classShedule)!= true){ 
     app.dialog.alert('Por favor Inserte una fecha valida')
     return
   }
-  let newClass= new Classes(className, mail, classShedule, classSumary, classRequirements , price,  classLink,  classDelayAllowed, classPicture|| '');
+  let newClass= new Classes(className, mail, classShedule, classSumary, classDuration , price,  classLink,  classDelayAllowed, classPicture|| '');
   colUpdate(classesCol, newClass, id)
   tab=1 
   app.dialog.alert('Clase creada exitosamente!')
   mainView.router.navigate('/index/')
 }
-/*Check if the date is correct when creating a new class*/
-let checkDate=(str)=>{
-  let now= new Date()
-  let classDate = new Date(str)
-  let timePast = now.getTime()>classDate.getTime()
-  console.log(classDate.getTime())
-  console.log(now.getTime())
-  console.log(timePast)
-  if (timePast){
-    return false
-  }else{
-    return true
-  }
-}
+
+
 
 /*takes one object called changes, and one id and then uploads it to database
 IDEA: use a third argument to choose between collections to manage them with just one function. (collection, changes, id)*/
@@ -461,76 +548,10 @@ let fnLogin = () =>{
 
 /*generates date picker on create view*/
 let datePicker=()=>{
-  var today = new Date();
-  var pickerInline = app.picker.create({
-    containerEl: '#demo-picker-date-container',
-    inputEl: '#demo-picker-date',
-    toolbar: false,
-    rotateEffect: true,
-    value: [
-      today.getMonth(),
-      today.getDate(),
-      today.getFullYear(),
-      today.getHours(),
-      today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes()
-    ],
-    formatValue: function (values, displayValues) {
-      return displayValues[0] + ' ' + values[1] + ' ' + values[2] + ' ' + values[3] + ':' + values[4];
-    },
-    cols: [
-      // Months
-      {
-        values: ('0 1 2 3 4 5 6 7 8 9 10 11').split(' '),
-        displayValues: ('1 2 3 4 5 6 7 8 9 10 11 12').split(' '),
-        textAlign: 'left'
-      },
-      // Days
-      {
-        values: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
-      },
-      // Years
-      {
-        values: (function () {
-          var arr = [];
-          for (var i = 2021; i <= 2030; i++) { arr.push(i); }
-          return arr;
-        })(),
-      },
-      // Space divider
-      {
-        divider: true,
-        content: '&nbsp;&nbsp;'
-      },
-      // Hours
-      {
-        values: (function () {
-          var arr = [];
-          for (var i = 0; i <= 23; i++) { arr.push(i); }
-          return arr;
-        })(),
-      },
-      // Divider
-      {
-        divider: true,
-        content: ':'
-      },
-      // Minutes
-      {
-        values: (function () {
-          var arr = [];
-          for (var i = 0; i <= 59; i++) { arr.push(i < 10 ? '0' + i : i); }
-          return arr;
-        })(),
-      }
-    ],
-    on: {
-      change: function (picker, values, displayValues) {
-        var daysInMonth = new Date(picker.value[2], picker.value[0] * 1 + 1, 0).getDate();
-        if (values[1] > daysInMonth) {
-          picker.cols[1].setValue(daysInMonth);
-        }
-      },
-    }
+  let calendarDateTime = app.calendar.create({
+    inputEl: '#demo-calendar-date-time',
+    timePicker: true,
+    dateFormat: 'mm-dd-yyyy HH::mm'
   });
 }
 
