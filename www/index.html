@@ -61,40 +61,49 @@
               
               <div class="card card-expandable card-expandable-index">
                 <div class="card-content">
-                  <div class="row" >
-                    <div class="col-33">
-                      <img src="/img/jaz.jpg" class="card-image-profile" alt="Profile Pic" id="profilePic">
-                    </div>
-                    <div class=" col-66 card-header text-color-black margin-left-half display-flex flex-direction-column align-items-flex-start">
-                        <div class="col resizable">Perfil:</div>
-                      <div class="row ">
-                        <div class="col"> <small>Alito</small> <small>Figueras</small> </div>
-                      </div>
-                    </div>
-                    <a href="#" class="link card-close card-opened-fade-in color-white"
-                      style="position: absolute; right: 15px; top: 15px">
-                      <i class="icon f7-icons">xmark_circle_fill</i>
-                    </a>
-                  </div>
+                  <a href="#" class="link card-close card-opened-fade-in color-white"
+                    style="position: absolute; right: 15px; top: 15px">
+                    <i class="icon f7-icons">xmark_circle_fill</i>
+                  </a>
+                  <img src="/img/jaz.jpg" class="card-image-profile card-opened-fade-out" alt="Profile Pic" id="profilePic">
                   <div class="card-content-padding">
-                    <div class="block margin-bottom text-align-center">
-                      <div class="row">
-                        <div class="col complete" id="profileName">Nombre:</div>
-                        <div class="col complete" id="profileSurname">Apellido</div>
+                    <div class="elevation-10 padding profile-card-elevated">
+                      <div class="image-card-container">
+                        <img src="/img/jaz.jpg" class="card-image-profile" alt="Profile Pic" id="profilePic">
                       </div>
-                      <div class="row">
-                        <div class="col complete" id="profileAge">Edad</div>
-                        <div class="col complete"><u>0</u></div>
+                      <div>
+                        <div class="block-title">Información de perfil</div>
+                        <div class="list inset">
+                          <ul>
+                            <li class="item-content item-input">
+                              <div class="item-inner">
+                                <div class="item-input-wrap">
+                                  <input type="text" placeholder="Nombre" />
+                                  <span class="input-clear-button"></span>
+                                </div>
+                              </div>
+                            </li>
+                            <li class="item-content item-input">
+                              <div class="item-inner">
+                                <div class="item-input-wrap">
+                                  <input type="text" placeholder="Apellido" />
+                                  <span class="input-clear-button"></span>
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="block margin-bottom text-align-center">
+                          <div class="col complete" id="profileName">Nombre:</div>
+                          <div class="col complete" id="profileSurname">Apellido</div>
+                          <div class="col complete" id="profileAge">Edad</div>
+                          <div class="col complete"><u>0</u></div>
+                        </div>    
                       </div>
-                    </div>
-                    <div class="display-flex flex-direction-column justify-content-space-around">
-                      <div class="block margin-top">
-                        <div class="block-title last-c margin-top padding-top padding-left">Ultimo Curso</div>
+                      <div>
+                        <div class="button button-fill">Guardar cambios</div>
                       </div>
-                      <div class="block margin-top">
-                        <div class="block-title last-c margin-top padding-top padding-left">Ultima Clases</div>
-                      </div>
-                    </div>
+                  </div>
                   </div>
                 </div>
               </div>

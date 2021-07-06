@@ -138,13 +138,13 @@ $$(document).on('page:init', '.page[data-name="content"]', function (e) {
   getClasses()
   searchBar()
 })
-/*
-$$(document).on('card:open', '.page[data-name="content"]', function (e){ 
-  
-  classesbtn()
-  
-})*/
 
+$$(document).on('card:open', '.page[data-name="content"]', function (e){ 
+  $$('.searchbar').addClass('searchInvisible')
+})
+$$(document).on('card:close', '.page[data-name="content"]', function (e){ 
+  $$('.searchbar').removeClass('searchInvisible')
+})
 /*--------------------------------------------        ____               ---------------------------------------------------*/
 /*--------------------------------------------      __|00|__     ______  ---------------------------------------------------*/
 /*--------------------------------------------      |______|    / FN  /  ---------------------------------------------------*/
