@@ -137,6 +137,14 @@ left: 1vw;
 .profile-card-elevated{
   border-radius: 1rem;
   height: 57vh;
+  background-color: honeydew;
+}
+.title-profile {
+  position: absolute;
+  right: 30vw;
+  top: 2vh;
+  font-size: xx-large;
+  color: black;
 }
 .image-card-container{
  margin-left: auto;
@@ -144,6 +152,10 @@ left: 1vw;
  display: flex;
  align-content: center;
  justify-content: center;
+}
+.card-content-index{
+  background: rgb(238,174,202);
+background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
 }
 .last-c{
   width: 95%;
@@ -252,7 +264,6 @@ width: 95vw;
   position: absolute;
   height: 30vh;
   width: 100vw;
-
 }
 .card-image-profile{
   border-radius: 50%;
@@ -260,7 +271,6 @@ width: 95vw;
   margin-left: 2vw;
   height: 10vh;
   width: auto;
-  border: 3px solid blue ;
 }
 .card{
   width: 92%!important;

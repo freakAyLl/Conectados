@@ -25,13 +25,15 @@ var mainView = app.views.create('.view-main');
 
 //Clases
 class Users{
-  constructor(userName, userSurname, userAge, profilePic, userLevel, userCourses, userActivity, userCV, userType){
+  constructor(userName, userSurname, userAge, profilePic, userLevel, userCourses, userFavoriteTeacher, userFavoriteClass, userCV, userType){
     this.userName = userName ||'';
     this.userSurname = userSurname ||'';
     this.userAge = userAge ||'';
     this.profilePic = profilePic ||'';
     this.userLevel = userLevel ||0;
-    this.userActivity = userActivity ||[];
+    this.userCourses = userCourses || []
+    this.userFavoriteTeacher = userFavoriteTeacher ||[];
+    this.userFavoriteClass= userFavoriteClass ||[];
     this.userCV = userCV ||''; //teachers only
     this.userType = userType || 'Student'
   }
@@ -85,7 +87,7 @@ class Content{//class content objects content for each lesson
 let currentEmail= '';
 let registered=false;
 let tab=1;
-let name , surname , age, userType // usable just when profile is updated
+let name , surname , age, userType, userFavoriteClass,userFavoriteTeacher// usable just when profile is updated
 /*-------------------------------------------                   ______  ---------------------------------------------------*/
 /*-------------------------------------------                  / DB  /  ---------------------------------------------------*/
 /*-------------------------------------------                 /_____/   ---------------------------------------------------*/
@@ -125,7 +127,7 @@ $$(document).on('page:init','.page[data-name="index"]', function (e) {
 $$(document).on('page:init', '.page[data-name="create"]', function (e) {
   datePicker()
   $$('#createClassBtn').on('click', createClass)
-
+  $$('#newMeet').on('click', ()=>cordova.InAppBrowser.open('https://meet.google.com/new'))
 })
 //login init
 $$(document).on('page:init', '.page[data-name="login"]', function (e) {
@@ -162,7 +164,7 @@ let updateProfile = () => {
   .then((object)=>{
     let user= object.data()
     console.log('updating profile' +user)
-    let newUser = new Users(name || user.userName , surname || user.userSurname, age || user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV, userType || user.userType)//here i should put my new objects
+    let newUser = new Users(name || user.userName , surname || user.userSurname, age || user.userAge, user.profilePic, user.userLevel, user.userCourses, userFavoriteTeacher ||user.userFavoriteTeacher, userFavoriteClass, user.userCV, userType || user.userType)//here i should put my new objects
     console.log('downlodaing data'+ user)
     console.log(newUser)
     colUpdate( usersCol,newUser, currentEmail)
@@ -210,13 +212,14 @@ let classInsert = (arr) =>{
   arr.sort((a,b)=>{return new Date(a.classShedule) - new Date(b.classShedule)}) //sort by date 
   let parent = document.getElementById('classTabContainer')
   parent.innerHTML= ''
-  let i=0, j=0, toErrase=''
+  let i=0, j=0, toErrase='', toFav=''
   arr.forEach((eachClass)=>{
     usersCol.doc(eachClass.creatorMail).get()
     .then((teacher)=>{
       let classTeacher=teacher.data()
       let name= classTeacher.userName + ' ' + classTeacher.userSurname
       let cv = classTeacher.userCV
+      let link = eachClass.classVideoCall
       let price = 'gratis!'
       //console.log('creator'+eachClass.creatorMail)
       if(eachClass.classPrice!=0){[price= 'por $'+eachClass.classPrice+'!']}
@@ -242,12 +245,17 @@ let classInsert = (arr) =>{
         </div>`
       }else{
         cardBtn=`
-        <div class="fab fab-left-bottom card-btn color-yellow favTeacher" id="favTeacher${j}">
+      <div class="fab fab-left-bottom card-btn color-yellow favTeacher" >
         <a href="#">
-          <span class="material-icons ">star</span>
+          <i class="icon material-icons md-only">star</i>
+          <i class="icon material-icons md-only">close</i>
         </a>
+        <div class="fab-buttons fab-buttons-top">
+          <a class="fab-label-button" id="favTeacher${j}" href="#"><span>1</span><span class="fab-label" >Profesor</span></a>
+          <a class="fab-label-button" id="favClass${j}" href="#"><span>2</span><span class="fab-label" >Clase</span></a>
+        </div>
       </div>
-        <div class="fab fab-extended fab-right-bottom color-blue joinVideocall" id="JoinVideocall${i}">
+      <div class="fab fab-extended fab-right-bottom color-blue joinVideocall" id="JoinVideocall${i}">
         <a href="#">
           <span class="material-icons margin-left">
             video_call
@@ -281,15 +289,32 @@ let classInsert = (arr) =>{
       $$('#JoinVideocall'+i).on('click',function(e){
         console.log(e)
         //join videocall
+        console.log("link: "+link)
+        console.log(link.includes('https://'))
+        if(link.includes('https://')){
+          console.log('all okay')
+          cordova.InAppBrowser.open(link)
+        }else{
+          console.log("i'll open new with https")
+          cordova.InAppBrowser.open('https://'+link)
+        }
+
+        
       })
       $$('#erraseVideocall'+j).on('click',function(e){
-        toErrase= currentEmail+' '+ cSh
+        toErrase = currentEmail+' '+ cSh
         app.dialog.confirm('Estas seguro que deseas borrar esta clase?', 'Borrar clase', function (){erraseClass(toErrase)})
       })
       $$('#favTeacher'+j).on('click',function(e){
-        console.log('faved'+e)
+        console.log('favedTeacher'+e)
         //fav the teacher
-        favTeacher()
+        TeacherToFav = eachClass.creatorMail
+        favTeacher(TeacherToFav)
+      })
+      $$('#favClass'+j).on('click',function(e){
+        console.log('favedClass'+e)
+        ClassToFav = eachClass.creatorMail + " " + eachClass.classShedule
+        favTeacher(ClassToFav)
       })
       j++
       i++
@@ -312,9 +337,47 @@ let erraseClass = (toErrase)=>{
   })
 }
 /*take class teacher and fav it*/
-let favTeacher = () => {
-  console.log('yep')
+let favTeacher = (toFav) => {
+  console.log('to fav:'+toFav)
+  usersCol.doc(currentEmail).get()
+  .then((currUser)=>{
+    let actualUs = currUser.data()
+    console.log(typeof(actualUs.userFavoriteClass))
+    if(actualUs.userFavoriteClass.includes(toFav)){
+      app.dialog.alert('Este profesor ya es tu favorito', 'Ups')
+      return
+    }
+    userFavoriteClass = actualUs.userFavoriteClass
+    console.log(actualUs.userFavoriteClass)
+    updateProfile()
+  })
+  .catch((error)=>console.log(error))
 }
+
+let favClass = (toFav) => {
+  console.log('to fav:'+toFav)
+  usersCol.doc(currentEmail).get()
+  .then((currUser)=>{
+    let actualUs = currUser.data()
+    if(actualUs.userFavoriteTeacher.includes(toFav)){
+      app.dialog.alert('Esta clase ya es tu favorita', 'Ups')
+      return
+    }
+    actualUs.userFavoriteTeacher.push(toFav)
+    userFavoriteTeacher = actualUs.userFavoriteTeacher
+    console.log(actualUs.userFavoriteTeacher)
+    updateProfile()
+  })
+  .catch((error)=>console.log(error))
+}
+/*takes one object called changes, and one id and then uploads it to database
+IDEA: use a third argument to choose between collections to manage them with just one function. (collection, changes, id)*/
+let colUpdate = (colection,changes, id) => {//
+  colection.doc(id).set(Object.assign({}, changes))
+  .then(()=>{registered=false})
+  .catch(()=>{console.log('no se creo con el id'+docRef)})
+}
+
 /*generates prompts for every field, selecting which one was clicked.*/
 let promptGenerator = (key)=>{
   console.log('ejecutado')
@@ -442,23 +505,10 @@ let createClass = () =>{
   mainView.router.navigate('/index/')
 }
 
-
-
-/*takes one object called changes, and one id and then uploads it to database
-IDEA: use a third argument to choose between collections to manage them with just one function. (collection, changes, id)*/
-let colUpdate = (colection,changes, id) => {//
-  colection.doc(id).set(Object.assign({}, changes))
-  .then(()=>{
-    registered=false//prevent catch to excecute
-  })
-  .catch(()=>{console.log('no se creo con el id'+docRef)})
-}
-
-
 /*creates new user from class users and excecute change users with its new object and current email*/
 let createUser = () =>{
   let user = firebase.auth().currentUser;
-  let newUser = new Users(user.userName , user.userSurname, user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userActivity, user.userCV, user.userType)
+  let newUser = new Users(user.userName , user.userSurname, user.userAge, user.profilePic, user.userLevel, user.userCourses, user.userFavoriteTeacher, user.userFavoriteClass, user.userCV, user.userType)
   console.log('Cree un User: '+ newUser) 
   colUpdate(usersCol ,newUser, currentEmail)
 }

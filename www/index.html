@@ -60,16 +60,17 @@
               </div>
               
               <div class="card card-expandable card-expandable-index">
-                <div class="card-content">
+                <div class="card-content card-content-index">
                   <a href="#" class="link card-close card-opened-fade-in color-white"
                     style="position: absolute; right: 15px; top: 15px">
                     <i class="icon f7-icons">xmark_circle_fill</i>
                   </a>
                   <img src="/img/jaz.jpg" class="card-image-profile card-opened-fade-out" alt="Profile Pic" id="profilePic">
+                  <div class="title-profile">Mi perfil</div>
                   <div class="card-content-padding">
-                    <div class="elevation-10 padding profile-card-elevated">
+                    <div class="elevation-21 padding profile-card-elevated text-align-center">
                       <div class="image-card-container">
-                        <img src="/img/jaz.jpg" class="card-image-profile" alt="Profile Pic" id="profilePic">
+                        <img src="/img/jaz.jpg" class="card-image-profile elevation-2" alt="Profile Pic" id="profilePic">
                       </div>
                       <div>
                         <div class="block-title">Información de perfil</div>
@@ -78,7 +79,14 @@
                             <li class="item-content item-input">
                               <div class="item-inner">
                                 <div class="item-input-wrap">
-                                  <input type="text" placeholder="Nombre" />
+                                  <div class="col complete" id="profileName">Nombre:</div>
+                                </div>
+                              </div>
+                            </li>
+                            <li class="item-content item-input">
+                              <div class="item-inner">
+                                <div class="item-input-wrap">
+                                  <div class="col complete" id="profileSurname">Apellido</div>
                                   <span class="input-clear-button"></span>
                                 </div>
                               </div>
@@ -86,18 +94,12 @@
                             <li class="item-content item-input">
                               <div class="item-inner">
                                 <div class="item-input-wrap">
-                                  <input type="text" placeholder="Apellido" />
+                                  <div class="col complete" id="profileAge">Edad</div>
                                   <span class="input-clear-button"></span>
                                 </div>
                               </div>
                             </li>
                           </ul>
-                        </div>
-                        <div class="block margin-bottom text-align-center">
-                          <div class="col complete" id="profileName">Nombre:</div>
-                          <div class="col complete" id="profileSurname">Apellido</div>
-                          <div class="col complete" id="profileAge">Edad</div>
-                          <div class="col complete"><u>0</u></div>
                         </div>    
                       </div>
                       <div>
