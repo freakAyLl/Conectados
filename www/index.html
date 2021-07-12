@@ -8,6 +8,8 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: cdvfile: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+    
     <!-- Color theme for statusbar -->
     <!-- <meta name="theme-color" content="#2196f3"> -->
     <meta name="color-scheme" content="light dark">
@@ -58,19 +60,18 @@
               <div class="text-align-center">
                 <p class="title-text no-margin-right">Conectados <img class="title-logo" src="img/logo-final.png" alt="logo"></p>
               </div>
-              
               <div class="card card-expandable card-expandable-index">
                 <div class="card-content card-content-index">
                   <a href="#" class="link card-close card-opened-fade-in color-white"
                     style="position: absolute; right: 15px; top: 15px">
                     <i class="icon f7-icons">xmark_circle_fill</i>
                   </a>
-                  <img src="/img/jaz.jpg" class="card-image-profile card-opened-fade-out" alt="Profile Pic" id="profilePic">
+                  <img src="img/jaz.jpg" class="card-image-profile card-opened-fade-out" alt="Profile Pic" id="profilePic">
                   <div class="title-profile">Mi perfil</div>
                   <div class="card-content-padding">
                     <div class="elevation-21 padding profile-card-elevated text-align-center">
                       <div class="image-card-container">
-                        <img src="/img/jaz.jpg" class="card-image-profile elevation-2" alt="Profile Pic" id="profilePic">
+                        <img src="img/jaz.jpg" class="card-image-profile elevation-2" alt="Profile Pic" id="profilePicUser">
                       </div>
                       <div>
                         <div class="block-title">Información de perfil</div>
@@ -103,7 +104,17 @@
                         </div>    
                       </div>
                       <div>
-                        <div class="button button-fill">Guardar cambios</div>
+                        <div class="button button-fill popover-open" data-popover=".my-popover" id="testStorage">Actualizar foto de perfil</div>
+                      </div>
+                      <div class="popover my-popover">
+                        <div class="popover-inner">
+                          <div class="list">
+                            <ul>
+                              <li><a class="list-button item-link popover-close" href="#" id="useCamera">Tomar Foto</a></li>
+                              <li><a class="list-button item-link popover-close" href="#" id="useGalery">Abrir Galeria</a></li>
+                            </ul>
+                          </div>
+                        </div>
                       </div>
                   </div>
                   </div>
@@ -159,7 +170,7 @@
         https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.2.7/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-storage.js"></script>
 
     <script>
       // Your web app's Firebase configuration

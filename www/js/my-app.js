@@ -87,7 +87,7 @@ class Content{//class content objects content for each lesson
 let currentEmail= '';
 let registered=false;
 let tab=1;
-let name , surname , age, userType, userFavoriteClass,userFavoriteTeacher// usable just when profile is updated
+let name , surname , age, userType, userFavoriteClass, userFavoriteTeacher, profilePic// usable just when profile is updated
 /*-------------------------------------------                   ______  ---------------------------------------------------*/
 /*-------------------------------------------                  / DB  /  ---------------------------------------------------*/
 /*-------------------------------------------                 /_____/   ---------------------------------------------------*/
@@ -101,7 +101,8 @@ let db= firebase.firestore()
 //COLLECTIONS
 let usersCol = db.collection('Users')
 let classesCol = db.collection('Clases')
-
+//CLOUD STORAGE
+let storageRef= firebase.storage().ref()
 /*--------------------------------------------                   ______  ---------------------------------------------------*/
 /*--------------------------------------------                  /INIT /  ---------------------------------------------------*/
 /*--------------------------------------------                 /_____/   ---------------------------------------------------*/
@@ -122,12 +123,14 @@ $$(document).on('page:init','.page[data-name="index"]', function (e) {
   $$('#profileName').on('click', ()=>{promptGenerator('n')})
   $$('#profileSurname').on('click', ()=>{promptGenerator('s')})
   $$('#profileAge').on('click', ()=>{promptGenerator('a')})
+  $$('#useCamera').on('click', ()=> fnUseCamera())
+  $$('#useGalery').on('click', ()=> fnUseGallery())
 })
 //create init
 $$(document).on('page:init', '.page[data-name="create"]', function (e) {
   datePicker()
   $$('#createClassBtn').on('click', createClass)
-  $$('#newMeet').on('click', ()=>cordova.InAppBrowser.open('https://meet.google.com/new'))
+  $$('#newMeet').on('click', ()=>cordova.InAppBrowser.open(encodeURI('https://meet.google.com/new'), '_system', 'location=yes'))
 })
 //login init
 $$(document).on('page:init', '.page[data-name="login"]', function (e) {
@@ -157,6 +160,91 @@ $$(document).on('card:close', '.page[data-name="content"]', function (e){
 /*--------------------------------------------       | || |              ---------------------------------------------------*/
 /*--------------------------------------------     ````````              ---------------------------------------------------*/
 
+
+let fnUseGallery = () =>{
+  navigator.camera.getPicture(onSuccess, onFail, { 
+    quality: 50,
+    destinationType: Camera.DestinationType.FILE_URI,
+    sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+  });
+}
+
+let fnUseCamera = () =>{
+  navigator.camera.getPicture(onSuccess, onFail, { 
+    quality: 50,
+    destinationType: Camera.DestinationType.FILE_URI 
+  });
+}
+
+function onSuccess(imageData) {
+  let nameImg=currentEmail+'.jpg'
+  console.log('imagen de camara '+ imageData)
+  console.log(typeof(imageData))
+  getFileObject(imageData, function(fileObject) { //fn1
+    var uploadTask = storageRef.child('images/users/'+nameImg).put(fileObject); //recibe un archivo blob y lo sube al cloud storage
+    uploadTask.on('state_changed', function(snapshot) {                   //promesa que administra o supervisa el estado de la carga cuando cambie el estado de su snapshot, mostrando el estado del snapsht,
+        console.log(snapshot);                                            //
+    }, function(error) { //funcion de error
+        console.log(error);
+    }, function() {     //funcion que si todo sale bien:
+        uploadTask.snapshot.ref.getDownloadURL().then( //obtengo el url de descarga
+          function(downloadURL) {
+          console.log('el archivo esta disponible en', downloadURL);//Muestro el link
+            app.dialog.alert('Imagen subida')
+          //aca abajo puedo elegir que hacer con mi imagen que ya esta cargada y la puedo manejar a partir de mi download link
+          profilePic=downloadURL
+          updateProfile()
+        });
+    });
+  });
+  
+ 
+}
+// lo de abajo se ejecuta en la funcion on succes (es necesario ejecutar solo getFileFbject) dentro del succes
+//toma un blob y un nombre y cambia fecha y nombre, luego devuelve el blob
+var blobToFile = function(blob, name) { 
+  console.log('blob to File')
+  blob.lastModifiedDate = new Date()    //modifica la ultima fecha del blob 
+  blob.name = name                      //modifica el nombre del blob
+  console.log('your blob: '+blob)
+  return blob
+}
+//A partir de la ubicacion de nuestro file y una funcion (cb) ejecuta getfileBlob (funcion especificada abajo)
+function getFileObject(filePathOrUrl, cb) { 
+  console.log('get fle to blob '+ filePathOrUrl)
+  getFileBlob(filePathOrUrl, function(blob) { //fn2      //llama a la funcion getFileBlob con el url introducido y una funcion que: 
+      console.log('im in get file to blob')
+      cb(blobToFile(blob, 'test.jpg'));             //ejecuta nuestro cb (callback) sobre el blob con nombre y fecha cambiada (el nombre sera 'test.jpg')
+  });
+};
+var xhr
+function getFileBlob(url, cb) {   
+  const blob = new Promise((resolve, reject) => {
+    xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.onload = function() {
+      resolve(xhr.response);
+    };
+    xhr.onerror = function() {
+      reject(new TypeError('Network request failed'));
+    };
+    xhr.responseType = 'blob';
+  })
+  xhr.addEventListener('load', ()=>{
+    cb(xhr.response) 
+  })
+  xhr.addEventListener('error', (error)=>{ 
+    console.log('error'+error)
+    console.error(JSON.stringify(error, ["message", "arguments", "type", "name"]))
+  })
+  console.log('ya pase el add event listener')
+  xhr.send() 
+}
+
+function onFail(message) {
+  app.dialog.alert('Failed because: ' + message);
+}
+
 /*obtain data from database using doc and calls change compare to the object created locally, then pass the new object to other functions.
 IDEA: use to params to select collections and doc*/
 let updateProfile = () => {
@@ -164,7 +252,7 @@ let updateProfile = () => {
   .then((object)=>{
     let user= object.data()
     console.log('updating profile' +user)
-    let newUser = new Users(name || user.userName , surname || user.userSurname, age || user.userAge, user.profilePic, user.userLevel, user.userCourses, userFavoriteTeacher ||user.userFavoriteTeacher, userFavoriteClass, user.userCV, userType || user.userType)//here i should put my new objects
+    let newUser = new Users(name || user.userName , surname || user.userSurname, age || user.userAge, profilePic || user.profilePic, user.userLevel, user.userCourses, userFavoriteTeacher ||user.userFavoriteTeacher, userFavoriteClass || user.userFavoriteClass, user.userCV, userType || user.userType)//here i should put my new objects
     console.log('downlodaing data'+ user)
     console.log(newUser)
     colUpdate( usersCol,newUser, currentEmail)
@@ -267,7 +355,7 @@ let classInsert = (arr) =>{
       li.innerHTML=`<li class="item-content card card-expandable lazy lazy-fade-in demo-laz item-inner">
       <div class="card-content">
         <div class="" style="height: 30vh">
-          <img src="/img/zumba.jpg" class="card-image" alt="">
+          <img src="img/zumba.jpg" class="card-image" alt="">
           <i class='shape1'></i>
           <div class="card-header item-title text-color-white display-block no-margin-bottom">${eachClass.className}<br />
             <small class="sub-title-card"> ${time} <br/> ${name}</small>
@@ -287,16 +375,14 @@ let classInsert = (arr) =>{
     </li>`
       parent.appendChild(li)
       $$('#JoinVideocall'+i).on('click',function(e){
-        console.log(e)
+        console.log('quiero entrar a un link')
         //join videocall
         console.log("link: "+link)
         console.log(link.includes('https://'))
         if(link.includes('https://')){
-          console.log('all okay')
-          cordova.InAppBrowser.open(link)
+          cordova.InAppBrowser.open(encodeURI(link), '_system', 'location=yes');
         }else{
-          console.log("i'll open new with https")
-          cordova.InAppBrowser.open('https://'+link)
+          cordova.InAppBrowser.open(encodeURI('https://'+link), '_system', 'location=yes');
         }
 
         
@@ -314,7 +400,7 @@ let classInsert = (arr) =>{
       $$('#favClass'+j).on('click',function(e){
         console.log('favedClass'+e)
         ClassToFav = eachClass.creatorMail + " " + eachClass.classShedule
-        favTeacher(ClassToFav)
+        favClass(ClassToFav)
       })
       j++
       i++
@@ -341,14 +427,16 @@ let favTeacher = (toFav) => {
   console.log('to fav:'+toFav)
   usersCol.doc(currentEmail).get()
   .then((currUser)=>{
-    let actualUs = currUser.data()
-    console.log(typeof(actualUs.userFavoriteClass))
-    if(actualUs.userFavoriteClass.includes(toFav)){
+    let actualUs = currUser.data().userFavoriteTeacher
+    console.log(typeof(actualUs))
+    if(actualUs.includes(toFav)){
       app.dialog.alert('Este profesor ya es tu favorito', 'Ups')
       return
     }
-    userFavoriteClass = actualUs.userFavoriteClass
-    console.log(actualUs.userFavoriteClass)
+    console.log('i started with '+actualUs)
+    actualUs.push(toFav)
+    userFavoriteTeacher = actualUs
+    console.log('faved '+actualUs)
     updateProfile()
   })
   .catch((error)=>console.log(error))
@@ -358,14 +446,14 @@ let favClass = (toFav) => {
   console.log('to fav:'+toFav)
   usersCol.doc(currentEmail).get()
   .then((currUser)=>{
-    let actualUs = currUser.data()
-    if(actualUs.userFavoriteTeacher.includes(toFav)){
+    let actualUs = currUser.data().userFavoriteClass
+    if(actualUs.includes(toFav)){
       app.dialog.alert('Esta clase ya es tu favorita', 'Ups')
       return
     }
-    actualUs.userFavoriteTeacher.push(toFav)
-    userFavoriteTeacher = actualUs.userFavoriteTeacher
-    console.log(actualUs.userFavoriteTeacher)
+    actualUs.push(toFav)
+    userFavoriteClass= actualUs
+    console.log(actualUs)
     updateProfile()
   })
   .catch((error)=>console.log(error))
@@ -449,7 +537,11 @@ let newButtons=()=>{
   })
 }
 /*Update every screen off the app*/
-let updateApp= (newUser)=>{
+let updateApp= (newUser) => {
+  if(newUser.profilePic!=''){
+    $$('#profilePic').attr('src', newUser.profilePic)
+    $$('#profilePicUser').attr('src', newUser.profilePic)
+  }
   if(newUser.userType=='Teacher'){
     $$('#becomeTeacherBtn').remove()
     $$('#lateralPanel').html(`
@@ -463,6 +555,8 @@ let updateApp= (newUser)=>{
   if(newUser.userName!=''){$$('#profileName').html(newUser.userName)}else{$$('#profileName').html('Inserte su Nombre')}
   if(newUser.userSurname!=''){$$('#profileSurname').html(newUser.userSurname)}else{$$('#profileSurname').html('Inserte su apellido')}
   if(newUser.userAge!=''){$$('#profileAge').html(newUser.userAge)}else{$$('#profileAge').html('Inserte su edad')}
+  
+
 }
 
 
